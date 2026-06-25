@@ -63,9 +63,59 @@ cd identity/circuits && npm install && bash scripts/compile.sh && POWER=13 bash 
 npm run serve -w @behuman/issuer      # backend en :8787
 npm run dev   -w @behuman/web         # frontend (cámara) en :5173
 
-# e2e on-chain (deploy + register + verify en testnet)
+# e2e on-chain (deploy + register + verify en testnet, vía SDK en Node)
 bash scripts/e2e_demo.sh
 ```
+
+## Registro on-chain desde el FRONTEND (wallet + prueba ZK en el navegador)
+
+El front genera la prueba en el navegador, conecta wallet (Stellar Wallets Kit), llama
+`verify_and_register` y muestra `is_verified == true`.
+
+Requisitos: una wallet (Freighter/xBull/LOBSTR) en **testnet** y **fondeada** (friendbot).
+
+```bash
+# 1) circuito compilado + trusted setup (una vez)
+(cd identity/circuits && npm install && bash scripts/compile.sh && POWER=13 bash scripts/setup.sh)
+
+# 2) modelos del matcher (una vez)
+npm run download-models -w @behuman/issuer
+
+# 3) desplegar un contrato FRESCO (sin init: el front lo inicializa) y resetear el issuer
+rm -f identity/issuer/.issuer-state.json
+bash scripts/deploy_testnet.sh          # imprime KYC_VERIFIER_CONTRACT_ID
+
+# 4) poner ese id en .env (el front lo lee por envDir=raíz)
+#    VITE_KYC_VERIFIER_CONTRACT_ID=<id>
+
+# 5) levantar backend + front
+npm run serve -w @behuman/issuer        # :8787
+npm run dev   -w @behuman/web           # :5173  (copia artefactos a web/public/circuits)
+```
+
+En el navegador: conectar wallet → consentimiento → foto DNI → datos → escaneo de cara.
+El front: calcula commitment, enrola (gate + de-dup), genera la prueba ZK, inicializa el
+contrato con el `issuerRoot` y firma `verify_and_register`; al final muestra
+`is_verified(address) == true` + link a la tx.
+
+> ⚠️ **root fijo en `init`** (el contrato no se modifica): cada demo usa un contrato propio.
+> El primer usuario inicializa el contrato con su raíz; para otra persona, desplegar otro.
+> Evolución (no en esta tanda): raíz incremental / función admin de actualización.
+
+### Anti-Sybil — dos candados (ambos visibles desde el front)
+1. **De-dup por documento** (off-chain, issuer): `sha256(docId + DEDUP_PEPPER)` — no se
+   guarda el número. Reintento con el mismo documento → "este documento ya fue validado".
+2. **Nullifier on-chain** (`verify_and_register`): reenviar la misma prueba → rechazo
+   `NullifierAlreadyUsed` (botón "probar candado de nullifier" en la pantalla final).
+
+### Contratos desplegados (testnet)
+- e2e (SDK, init incluido): `CBRBOJRALKORUSHKCHPUBA3DBTYKGLYONHNJVC4MUXHZ46EOWMZQOY34`
+- demo front (deploy fresco, init desde el front): `CAMOAESW7NUT5EZAFNX7UF74H5HHLLWLY5TCQJF3CPWR6YZLIL7T6IBI`
+
+> Nota: el flujo on-chain (init + verify_and_register + is_verified) está probado de punta
+> a punta en testnet vía `scripts/e2e_demo.sh`. El encoding BLS y el addressHash del
+> navegador son espejos validados del SDK; la firma con wallet y la prueba en el navegador
+> se verifican manualmente desde el front.
 
 ## Tests
 
