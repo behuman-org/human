@@ -35,6 +35,9 @@ witness.wtns
 # --- Soroban test snapshots (generados al correr los tests) ---
 **/test_snapshots/
 
+# --- Modelos de face-api (pesados; se bajan con `npm run download-models`) ---
+identity/issuer/matcher/models/
+
 # --- Coordinación entre agentes (no es código del producto) ---
 .comms/
 
