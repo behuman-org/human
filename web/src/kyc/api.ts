@@ -1,6 +1,6 @@
 // Cliente del gate (matcher). La PII (DNI + frames) va al backend por multipart;
 // el backend nunca devuelve imágenes, solo el resultado.
-import type { MatchResult } from "@behuman/shared";
+import type { EnrollmentResult, MatchResult } from "@behuman/shared";
 
 const BASE = import.meta.env.VITE_MATCHER_URL ?? "http://localhost:8787";
 
@@ -25,4 +25,24 @@ export async function verifyGate(document: Blob, frames: Blob[]): Promise<MatchR
   const res = await fetch(`${BASE}/verify`, { method: "POST", body: fd });
   if (!res.ok) throw new Error(`gate HTTP ${res.status}`);
   return (await res.json()) as MatchResult;
+}
+
+/**
+ * Gate (match+liveness+documento) + de-dup anti-Sybil + emisión: agrega el commitment
+ * al árbol del issuer y devuelve issuerRoot + camino Merkle. El `secret` NO se envía.
+ */
+export async function enroll(
+  document: Blob,
+  frames: Blob[],
+  commitment: string,
+  docId: string,
+): Promise<EnrollmentResult> {
+  const fd = new FormData();
+  fd.append("document", document, "dni.jpg");
+  frames.forEach((f, i) => fd.append("selfie", f, `frame${i}.jpg`));
+  fd.append("commitment", commitment);
+  fd.append("docId", docId);
+  const res = await fetch(`${BASE}/enroll`, { method: "POST", body: fd });
+  if (!res.ok) throw new Error(`enroll HTTP ${res.status}`);
+  return (await res.json()) as EnrollmentResult;
 }

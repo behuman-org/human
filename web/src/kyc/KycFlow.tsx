@@ -1,86 +1,178 @@
-// Orquesta el flujo del gate de Capa 1: consentimiento -> DNI -> cámara -> resultado.
+// Flujo completo de Capa 1 desde el frontend:
+//   wallet -> consentimiento -> DNI -> datos -> cara -> [enroll + prueba ZK + on-chain]
+//   -> is_verified == true.
 //
-// Demuestra la validación biométrica EN VIVO (match 1:1 + liveness). La creación de la
-// identidad (commitment -> prueba ZK -> registro on-chain) se ejecuta vía el SDK / e2e
-// (ver scripts/e2e_demo.sh): el commitment es no-custodial y en producción se calcula
-// en el device.
+// Privacidad: la PII (imágenes) va al gate y no se persiste; el `secret` se genera y queda
+// en el device; on-chain sólo van commitment/proof/nullifier/issuerRoot.
+//
+// Anti-Sybil (dos candados, ambos visibles):
+//   1) de-dup por documento en el issuer  -> "este documento ya fue validado".
+//   2) nullifier on-chain en verify_and_register -> "este humano ya tiene identidad".
 import { useState } from "react";
-import type { MatchResult } from "@behuman/shared";
 import { Consent } from "./Consent";
 import { DocumentUpload } from "./DocumentUpload";
+import { Attributes, type AttributesInput } from "./Attributes";
 import { FaceScan } from "./FaceScan";
-import { verifyGate } from "./api";
+import { connectWallet } from "./wallet";
+import { enroll } from "./api";
+import { computeCommitment, generateProof, randomSecret, type GeneratedProof } from "./zk";
+import { initIfNeeded, isVerified, verifyAndRegister, ContractError } from "./chain";
+import { CONTRACT_ID } from "./stellar";
 
-type Step = "consent" | "document" | "scan" | "verifying" | "result";
+type Step = "connect" | "consent" | "document" | "attributes" | "scan" | "processing" | "done" | "error";
+
+const REASON: Record<string, string> = {
+  already_enrolled: "Este documento ya fue validado (anti-Sybil). No puede crear otra identidad.",
+  face_mismatch: "La cara no coincide con la del documento.",
+  no_liveness_motion: "No se detectó vivacidad (parpadeo/giro).",
+  not_an_id_document: "La imagen no es un documento de identidad.",
+  no_face_in_document: "No se detecta cara en el documento.",
+  no_face_in_selfie: "No se detecta tu cara en el escaneo.",
+};
 
 export function KycFlow() {
-  const [step, setStep] = useState<Step>("consent");
+  const [step, setStep] = useState<Step>("connect");
+  const [address, setAddress] = useState<string | null>(null);
   const [doc, setDoc] = useState<Blob | null>(null);
-  const [result, setResult] = useState<MatchResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [attrs, setAttrs] = useState<AttributesInput | null>(null);
+  const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
+  const [txHash, setTxHash] = useState<string | null>(null);
+  const [verified, setVerified] = useState(false);
+  const [lastProof, setLastProof] = useState<GeneratedProof | null>(null);
+  const [nullifierMsg, setNullifierMsg] = useState<string | null>(null);
 
-  async function onCaptured(frames: Blob[]) {
-    setStep("verifying");
+  function fail(m: string) {
+    setError(m);
+    setStep("error");
+  }
+
+  async function onConnect() {
     try {
-      setResult(await verifyGate(doc!, frames));
+      setAddress(await connectWallet());
+      setStep("consent");
     } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setStep("result");
+      fail("No se pudo conectar la wallet: " + (e as Error).message);
     }
   }
 
-  function reset() {
-    setStep("consent");
-    setDoc(null);
-    setResult(null);
-    setError(null);
+  async function process(frames: Blob[]) {
+    if (!doc || !attrs || !address) return fail("Faltan datos del flujo.");
+    setStep("processing");
+    try {
+      setMsg("Generando tu secreto e identidad (en el dispositivo)…");
+      const secret = randomSecret();
+      const commitment = await computeCommitment(attrs, secret);
+
+      setMsg("Validando documento + cara y registrando en el issuer…");
+      const en = await enroll(doc, frames, commitment, attrs.docId);
+      if (!en.ok) {
+        return fail(en.reasons.map((r) => REASON[r] ?? r).join(" "));
+      }
+
+      setMsg("Generando la prueba ZK en tu dispositivo (la PII no sale)…");
+      const gen = await generateProof(attrs, secret, en.pathElements!, en.pathIndices!, address);
+      setLastProof(gen);
+
+      setMsg("Inicializando el registro on-chain si hace falta (firmá en la wallet)…");
+      await initIfNeeded(address, en.issuerRoot!);
+
+      setMsg("Registrando en Stellar — firmá en tu wallet…");
+      let hash: string;
+      try {
+        hash = await verifyAndRegister(address, gen);
+      } catch (e) {
+        if (e instanceof ContractError && e.code === 3) {
+          return fail("Este humano ya tiene identidad (rechazo on-chain por nullifier).");
+        }
+        throw e;
+      }
+      setTxHash(hash);
+
+      setMsg("Confirmando on-chain…");
+      setVerified(await isVerified(address));
+      setStep("done");
+    } catch (e) {
+      fail((e as Error).message);
+    }
   }
 
-  if (step === "consent") return <Consent onAccept={() => setStep("document")} />;
-  if (step === "document")
-    return (
-      <DocumentUpload
-        onNext={(d) => {
-          setDoc(d);
-          setStep("scan");
-        }}
-      />
-    );
-  if (step === "scan") return <FaceScan onCaptured={onCaptured} />;
-  if (step === "verifying")
+  // Demuestra el segundo candado: reenviar la misma prueba -> nullifier ya usado.
+  async function retryRegister() {
+    if (!address || !lastProof) return;
+    setNullifierMsg("Reenviando la misma prueba…");
+    try {
+      await verifyAndRegister(address, lastProof);
+      setNullifierMsg("(inesperado) se registró de nuevo.");
+    } catch (e) {
+      setNullifierMsg(
+        e instanceof ContractError && e.code === 3
+          ? "✅ Rechazado on-chain: " + e.message
+          : "Error: " + (e as Error).message,
+      );
+    }
+  }
+
+  if (step === "connect")
     return (
       <section className="app__card">
-        <h2>Verificando…</h2>
-        <p>Comparando tu cara con la del DNI y evaluando vivacidad…</p>
+        <h2>Conectá tu wallet</h2>
+        <p>Tu identidad verificada quedará registrada en Stellar (testnet) bajo esta dirección.</p>
+        {!CONTRACT_ID && (
+          <p style={{ color: "#c5221f" }}>
+            ⚠️ Falta <code>VITE_KYC_VERIFIER_CONTRACT_ID</code> en el entorno del frontend.
+          </p>
+        )}
+        <button type="button" onClick={onConnect}>Conectar wallet</button>
       </section>
     );
 
+  if (step === "consent") return <Consent onAccept={() => setStep("document")} />;
+  if (step === "document") return <DocumentUpload onNext={(d) => { setDoc(d); setStep("attributes"); }} />;
+  if (step === "attributes") return <Attributes onNext={(a) => { setAttrs(a); setStep("scan"); }} />;
+  if (step === "scan") return <FaceScan onCaptured={process} />;
+
+  if (step === "processing")
+    return (
+      <section className="app__card">
+        <h2>Procesando…</h2>
+        <p>{msg}</p>
+        <p style={{ fontSize: "0.85em", opacity: 0.7 }}>Puede pedirte firmar en la wallet.</p>
+      </section>
+    );
+
+  if (step === "error")
+    return (
+      <section className="app__card">
+        <h2>❌ No verificado</h2>
+        <p>{error}</p>
+        <button type="button" onClick={() => window.location.reload()}>Reintentar</button>
+      </section>
+    );
+
+  // done
   return (
     <section className="app__card">
-      <h2>{result?.ok ? "✅ Verificación exitosa" : "❌ No verificado"}</h2>
-      {error && <p>Error: {error}</p>}
-      {result && (
-        <ul>
-          <li>
-            Coincidencia con el DNI: <strong>{result.matchScore >= 0.4 ? "sí" : "no"}</strong>{" "}
-            (distancia {result.matchDistance})
-          </li>
-          <li>
-            Vivacidad (liveness): <strong>{result.livenessOk ? "sí" : "no"}</strong>
-          </li>
-          {result.reasons.length > 0 && <li>Motivos: {result.reasons.join(", ")}</li>}
-        </ul>
-      )}
-      {result?.ok && (
+      <h2>{verified ? "✅ Identidad verificada on-chain" : "Registrado (verificando…)"}</h2>
+      <p>
+        <code>is_verified({address?.slice(0, 4)}…{address?.slice(-4)})</code> ={" "}
+        <strong>{String(verified)}</strong>
+      </p>
+      {txHash && (
         <p>
-          Tu identidad de Capa 1 puede crearse. En el e2e: commitment → prueba ZK →{" "}
-          <code>verify_and_register</code> → <code>Verified(address)</code>.
+          tx:{" "}
+          <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer">
+            {txHash.slice(0, 10)}…
+          </a>
         </p>
       )}
-      <button type="button" onClick={reset}>
-        Reintentar
-      </button>
+      <hr />
+      <p style={{ fontSize: "0.9em" }}>
+        Anti-Sybil: el mismo documento es rechazado por el issuer (de-dup), y la misma persona
+        es rechazada on-chain por el nullifier.
+      </p>
+      <button type="button" onClick={retryRegister}>Probar candado de nullifier (reenviar prueba)</button>
+      {nullifierMsg && <p>{nullifierMsg}</p>}
     </section>
   );
 }
