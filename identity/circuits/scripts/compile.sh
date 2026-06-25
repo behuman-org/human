@@ -18,4 +18,12 @@ circom src/kyc.circom \
 
 echo "==> Info del circuito"
 snarkjs r1cs info build/kyc.r1cs
-echo "OK: artefactos en build/ (kyc.r1cs, kyc_js/kyc.wasm, kyc.sym)"
+
+# Helpers OFF-CHAIN (Poseidon) que usa el SDK para calcular hashes idénticos al circuito
+# (mismo --prime). No se usan on-chain.
+for h in poseidon2 poseidon3; do
+  echo "==> Compilando helper $h.circom (off-chain)"
+  circom "src/$h.circom" --wasm --prime bls12381 -o build -l node_modules
+done
+
+echo "OK: artefactos en build/ (kyc + poseidon2/3 helpers)"
