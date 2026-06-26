@@ -4,11 +4,12 @@ import { KycFlow } from "./kyc/KycFlow";
 import { Status } from "./kyc/Status";
 import { Platform } from "./platform/Platform";
 import { Moderation } from "./platform/Moderation";
+import { Funding } from "./funding/Funding";
 
 // beHuman — Frontend. Capa 1: validar identidad (DNI + cara → ZK → on-chain) y ver el
 // estado por wallet. 📐 `Flujo de KYC` · `Spec — Matcher DNI + Selfie` en la vault.
 
-type Mode = "home" | "validate" | "status" | "platform" | "moderation";
+type Mode = "home" | "validate" | "status" | "platform" | "moderation" | "funding";
 
 function App() {
   const [mode, setMode] = useState<Mode>("home");
@@ -34,6 +35,9 @@ function App() {
           <button type="button" onClick={() => setMode("platform")} style={{ marginTop: 8 }}>
             Plataforma de opinión (anónima)
           </button>
+          <button type="button" onClick={() => setMode("funding")} style={{ marginTop: 8 }}>
+            Funding ZK (donar anónimo + opinar por campaña)
+          </button>
           <button type="button" onClick={() => setMode("moderation")} style={{ marginTop: 8 }}>
             Moderación (cola humana)
           </button>
@@ -43,6 +47,7 @@ function App() {
       {mode === "validate" && <KycFlow />}
       {mode === "status" && <Status onBack={() => setMode("home")} />}
       {mode === "platform" && <Platform onBack={() => setMode("home")} />}
+      {mode === "funding" && <Funding onBack={() => setMode("home")} />}
       {mode === "moderation" && <Moderation onBack={() => setMode("home")} />}
 
       <footer className="app__footer">

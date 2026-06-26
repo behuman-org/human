@@ -32,3 +32,16 @@ if [ -f "$PSRC/post_final.zkey" ]; then
 else
   echo "⚠️  Faltan artefactos de plataforma en $PSRC (corré platform/circuits compile+setup)."
 fi
+
+# CAPA 3: circuito de opinión por campaña (funding).
+FSRC="$WEB/../funding/circuits/build"
+FDST="$WEB/public/circuits-funding"
+mkdir -p "$FDST"
+if [ -f "$FSRC/fo_final.zkey" ]; then
+  cp "$FSRC/funding_opinion_js/funding_opinion.wasm" "$FDST/funding_opinion.wasm"
+  cp "$FSRC/fo_final.zkey" "$FDST/fo_final.zkey"
+  cp "$FSRC/verification_key.json" "$FDST/verification_key.json"
+  echo "OK: artefactos Capa 3 en $FDST"
+else
+  echo "⚠️  Faltan artefactos de funding en $FSRC (corré funding/circuits compile+setup)."
+fi
