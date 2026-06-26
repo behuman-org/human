@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 import express from "express";
 import {
+  contentHashField,
   createDefindex,
   createTrustlessWork,
   RELEASE_THRESHOLD,
@@ -27,7 +28,12 @@ import type {
   Sentiment,
 } from "@behuman/shared";
 import { load, save } from "./store.js";
-import { verifyMembership, type MembershipProof } from "./gating.js";
+import {
+  verifyFundingOpinion,
+  verifyMembership,
+  type FundingOpinionProofInput,
+  type MembershipProof,
+} from "./gating.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(here, "..", "..", "..", ".env") });
@@ -242,22 +248,27 @@ app.post("/campaigns/:id/refund", async (req, res) => {
 });
 
 // ─── Opiniones anónimas por campaña (Capa 2 scopeada; nullifier por campaña) ───
-// publicSignals esperadas (circuito de funding): [issuerRoot, platformId, nullifier, contentHash]
+// Prueba ZK de funding (publicSignals): [issuerRoot, platformId, nullifier, scope, nullScope, contentHash].
+// platformId/nullifier salen DE la prueba (atados a esta campaña + contenido), no del body.
 app.post("/campaigns/:id/opinions", async (req, res) => {
   const s = load();
   const c = s.campaigns.find((x) => x.id === req.params.id);
   if (!c) return res.status(404).json({ error: "not_found" });
 
-  const membership = req.body?.membershipProof as MembershipProof | undefined;
-  const platformId = String(req.body?.platformId ?? "");
-  const nullifier = String(req.body?.nullifier ?? "");
   const content = String(req.body?.content ?? "").trim().slice(0, 560);
-  const contentHash = String(req.body?.contentHash ?? "");
+  if (!content) return res.status(400).json({ error: "missing_fields" });
   const sentiment = (["support", "oppose", "neutral"].includes(req.body?.sentiment) ? req.body.sentiment : "neutral") as Sentiment;
   const txHash = String(req.body?.txHash ?? "");
-  if (!platformId || !nullifier || !content || !contentHash) return res.status(400).json({ error: "missing_fields" });
 
-  if (!(await verifyMembership(membership))) return res.status(403).json({ error: "not_verified_human" });
+  // Verifica la prueba de opinión por campaña → claims de confianza (o null si inválida).
+  const opinionProof = req.body?.opinionProof as FundingOpinionProofInput | undefined;
+  const claims = await verifyFundingOpinion(c.id, content, opinionProof, {
+    platformId: req.body?.platformId,
+    nullifier: req.body?.nullifier,
+  });
+  if (!claims) return res.status(403).json({ error: "invalid_opinion_proof" });
+  const { platformId, nullifier } = claims;
+  const contentHash = contentHashField(content); // derivado server-side (atado a la prueba)
 
   // Anti-Sybil por campaña: 1 humano = 1 voz (nullifier scopeado a la campaña).
   const nkey = `${c.id}:${nullifier}`;
