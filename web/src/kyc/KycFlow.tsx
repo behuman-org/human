@@ -20,7 +20,7 @@ import { initIfNeeded, isVerified, verifyAndRegister, ContractError } from "./ch
 import { CONTRACT_ID } from "./stellar";
 import { loadCredential, saveCredential, type StoredCredential } from "./credentialStore";
 
-type Step = "connect" | "consent" | "document" | "attributes" | "scan" | "processing" | "done" | "error";
+type Step = "connect" | "checking" | "already" | "consent" | "document" | "attributes" | "scan" | "processing" | "done" | "error";
 
 const REASON: Record<string, string> = {
   already_enrolled: "Este documento ya fue validado (anti-Sybil). No puede crear otra identidad.",
@@ -82,8 +82,17 @@ export function KycFlow() {
 
   async function onConnect() {
     try {
-      setAddress(await connectWallet());
-      setStep("consent");
+      const addr = await connectWallet();
+      setAddress(addr);
+      // Anti-Sybil temprano: si esta wallet YA tiene identidad, no se permite re-validar.
+      setStep("checking");
+      let already = false;
+      try {
+        already = await isVerified(addr);
+      } catch {
+        already = false; // si el chequeo falla (red/contrato), no bloqueamos el alta
+      }
+      setStep(already ? "already" : "consent");
     } catch (e) {
       fail("No se pudo conectar la wallet: " + (e as Error).message);
     }
@@ -187,6 +196,26 @@ export function KycFlow() {
           </p>
         )}
         <button type="button" onClick={onConnect}>Conectar wallet</button>
+      </section>
+    );
+
+  if (step === "checking")
+    return (
+      <section className="app__card">
+        <h2>Un segundo…</h2>
+        <p>Comprobando si esta wallet ya tiene una identidad verificada.</p>
+      </section>
+    );
+
+  if (step === "already")
+    return (
+      <section className="app__card">
+        <h2>✅ Esta identidad ya existe</h2>
+        <p>
+          Esta wallet <strong>ya tiene una identidad verificada</strong>. No es necesario
+          —ni posible— validar de nuevo: cada persona tiene una sola identidad.
+        </p>
+        <button type="button" onClick={() => window.location.reload()}>Volver al inicio</button>
       </section>
     );
 
