@@ -19,21 +19,10 @@ export const POLLAR_ENABLED = POLLAR_KEY.length > 0;
 /** Monta el PollarProvider solo si está configurado; si no, no envuelve nada. */
 export function PollarRoot({ children }: { children: ReactNode }) {
   if (!POLLAR_ENABLED) return <>{children}</>;
+  // O2: sin override de appConfig → el modal refleja los métodos REALES habilitados en el
+  // dashboard de Pollar (email/Google/…) y usa los estilos/logo reales de la app.
   return (
-    <PollarProvider
-      client={{ apiKey: POLLAR_KEY, stellarNetwork: "testnet" }}
-      // Forzamos que el modal muestre la opción de EMAIL (override local de /applications/config).
-      // Si el backend de Pollar no tiene email habilitado para esta app, habrá que activarlo en
-      // el dashboard o usar una publishable key con email; este override solo afecta la UI.
-      appConfig={{
-        application: { name: "beHuman" },
-        styles: {
-          emailEnabled: true,
-          embeddedWallets: true,
-          providers: { google: true },
-        },
-      }}
-    >
+    <PollarProvider client={{ apiKey: POLLAR_KEY, stellarNetwork: "testnet" }}>
       {children}
     </PollarProvider>
   );
@@ -45,16 +34,19 @@ export function PollarRoot({ children }: { children: ReactNode }) {
  * Solo se renderiza dentro de <PollarRoot> (cuando POLLAR_ENABLED).
  */
 export function PollarEmailLogin({ onReady }: { onReady: () => void }) {
-  const { openLoginModal, isAuthenticated } = usePollar();
+  const { openLoginModal, isAuthenticated, verified } = usePollar();
   const [requested, setRequested] = useState(false);
   const fired = useRef(false);
 
+  // O1: avanzamos al onboarding apenas la SESIÓN está confirmada (isAuthenticated || verified),
+  // SIN esperar a que Pollar termine de crear/provisionar la wallet (no la necesitamos para el
+  // flujo anónimo). Evita quedar trabado en el "Loading..." del provisioning de la wallet.
   useEffect(() => {
-    if (requested && isAuthenticated && !fired.current) {
+    if (requested && (isAuthenticated || verified) && !fired.current) {
       fired.current = true;
       onReady();
     }
-  }, [requested, isAuthenticated, onReady]);
+  }, [requested, isAuthenticated, verified, onReady]);
 
   return (
     <Button

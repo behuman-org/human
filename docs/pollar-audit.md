@@ -62,5 +62,12 @@ Hay 2 observaciones menores (no bloquean) y notas de config.
 ## Conclusión
 
 La integración **cumple su objetivo** (onboarding fácil por email/Google) **sin sacrificar el
-anonimato ZK**. Pendiente de producto: O1 (UX del provisioning) y O2 (quitar el override de
-config). Ningún hallazgo compromete los invariantes.
+anonimato ZK**. Ningún hallazgo compromete los invariantes.
+
+### Mejoras aplicadas (post-auditoría)
+
+- **O1 ✅:** la navegación al onboarding ahora dispara con `isAuthenticated || verified` —
+  apenas la sesión está confirmada, **sin esperar** el provisioning de la wallet de Pollar (no
+  se necesita para el flujo anónimo). Evita quedar trabado en el "Loading...".
+- **O2 ✅:** se quitó el override de `appConfig`. El modal usa la **config real** del dashboard
+  (métodos habilitados + estilos/logo de la app).
