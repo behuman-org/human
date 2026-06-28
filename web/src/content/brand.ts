@@ -1,6 +1,6 @@
-/** Logos oficiales en `web/public/` — solo estos dos assets. */
+/** Logos oficiales en `web/public/`. El logo principal del producto es LOGOMAIN. */
 export const brand = {
-  logoHorizontal: "/logohuman.png",
-  logoStacked: "/logo2human.png",
+  logoHorizontal: "/logomain.png",
+  logoStacked: "/logomain.png",
   wordmark: "human",
 };
