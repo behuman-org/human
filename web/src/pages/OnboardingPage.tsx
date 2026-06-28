@@ -15,7 +15,7 @@ export function OnboardingPage() {
       <div className="bh-shell">
         <div className="bh-topbar">
           <Link to="/" className="bh-back">← Inicio</Link>
-          <img src={brand.logoHorizontal} alt={brand.wordmark} style={{ height: 22 }} />
+          <img src={brand.logoHorizontal} alt={brand.wordmark} style={{ height: 40 }} />
         </div>
         <KycFlow onDone={() => navigate("/app")} />
       </div>

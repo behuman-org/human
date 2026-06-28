@@ -89,15 +89,15 @@
 
 .site-nav__logo {
   display: block;
-  height: 2.25rem;
+  height: 3.5rem;
   width: auto;
-  max-width: 12rem;
+  max-width: 16rem;
 }
 
 @media (min-width: 960px) {
   .site-nav__logo {
-    height: 2.5rem;
-    max-width: 13rem;
+    height: 4rem;
+    max-width: 18rem;
   }
 }
 
