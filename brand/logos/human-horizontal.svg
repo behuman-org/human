@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 130" role="img" aria-label="human">
+  <title>human  lockup horizontal</title>
+  <g fill="#0a0a0a">
+    <polygon points="38.8,21 67.6,21 54.8,49.8 26,49.8" transform="translate(0,0)" />
+    <polygon points="51.6,56.2 80.4,56.2 67.6,85 38.8,85" />
+  </g>
+  <text x="120" y="92" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="86" font-weight="800" letter-spacing="-3" fill="#0a0a0a">human</text>
+</svg>

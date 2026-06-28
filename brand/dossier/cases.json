@@ -1,0 +1,609 @@
+{
+  "meta": {
+    "title": "Dossier de represalias por denuncia pública",
+    "subtitle": "Evidencia verificada del costo de exponer identidad al hablar",
+    "version": "1.0.0-lote1",
+    "generatedNote": "Lote 1: 18 casos desarrollados con fuentes primarias o institucionales. Base para ampliar a 100 fichas en bloques sucesivos.",
+    "scope": "2000–2026 · global · periodistas, activistas, defensores ambientales, denunciantes y voces públicas",
+    "lastUpdated": "2026-06-28"
+  },
+  "statistics": [
+    {
+      "value": "129",
+      "label": "periodistas y trabajadores de medios muertos en 2025 (CPJ)",
+      "source": "Committee to Protect Journalists",
+      "url": "https://cpj.org/2026/02/record-number-of-journalists-killed-in-2025-israel-responsible-for-two-thirds-of-deaths/"
+    },
+    {
+      "value": "67",
+      "label": "periodistas asesinados por su trabajo (dic. 2024 – dic. 2025, RSF)",
+      "source": "Reporters Without Borders",
+      "url": "https://rsf.org/en/2025-deadly-year-journalists-where-hate-and-impunity-lead"
+    },
+    {
+      "value": "503",
+      "label": "periodistas detenidos en 47 países (RSF, 1 dic. 2025)",
+      "source": "Reporters Without Borders",
+      "url": "https://rsf.org/sites/default/files/medias/file/2025/12/2025%20annual%20round-up_EN.pdf"
+    },
+    {
+      "value": "~85%",
+      "label": "impunidad global en asesinatos de periodistas (UNESCO)",
+      "source": "UNESCO Observatory",
+      "url": "https://www.unesco.org/en/days/end-impunity"
+    },
+    {
+      "value": "146",
+      "label": "defensores ambientales y de tierra asesinados o desaparecidos en 2024",
+      "source": "Global Witness",
+      "url": "https://globalwitness.org/en/press-releases/at-least-146-land-and-environmental-defenders-killed-or-disappeared-globally-in-2024/"
+    },
+    {
+      "value": "2.253",
+      "label": "defensores ambientales asesinados o desaparecidos desde 2012",
+      "source": "Global Witness",
+      "url": "https://globalwitness.org/en/campaigns/land-and-environmental-defenders/documenting-killings-and-disappearances-of-land-and-environmental-defenders/"
+    }
+  ],
+  "cases": [
+    {
+      "id": "caruana-galizia",
+      "name": "Daphne Caruana Galizia",
+      "region": "Europa · Malta",
+      "profession": "Periodista investigativa y bloguera",
+      "age": "53 (al morir)",
+      "country": "Malta",
+      "city": "Bidnija",
+      "organization": "Running Commentary / investigaciones sobre Panama Papers",
+      "outcome": "Asesinato",
+      "photoUrl": "https://cpj.org/data/people/daphne-caruana-galizia/",
+      "summary": "Una de las periodistas más influyentes de Malta. Investigó corrupción de élite, offshore vinculados a los Panama Papers y nexos entre políticos malteses y Azerbaiyán. Fue asesinada con un coche bomba en 2017.",
+      "exposed": "Empresas offshore de funcionarios de primer nivel; escándalo Egrant; corrupción en venta de pasaportes; vínculos políticos con estructuras reveladas en Panama Papers.",
+      "media": ["Blog", "Investigación propia", "Periódico"],
+      "timeline": [
+        { "date": "2016", "event": "Publica investigaciones sobre trusts en Nueva Zelanda y empresas en Panamá vinculadas a Keith Schembri y Konrad Mizzi." },
+        { "date": "16 oct 2017", "event": "Asesinada con coche bomba minutos después de publicar en su blog." },
+        { "date": "2019", "event": "La Asamblea Parlamentaria del Consejo de Europa exige una investigación pública independiente." },
+        { "date": "2021", "event": "La investigación pública concluye que el Estado creó un clima de impunidad que hizo posible el crimen." }
+      ],
+      "threats": "Años de demandas, campañas de desprestigio y presión política. Denunció que las autoridades no investigaban sus revelaciones sobre Panama Papers.",
+      "whatHappened": "Explosión de un artefacto colocado en su vehículo. Siete personas admitieron culpabilidad o fueron acusadas, incluido el presunto autor intelectual, según CPJ (2026).",
+      "status": "Condenas parciales; debate internacional sobre mandantes políticos y corrupcción sistémica.",
+      "links": [
+        { "title": "CPJ · perfil y estado del caso", "url": "https://cpj.org/data/people/daphne-caruana-galizia/" },
+        { "title": "Consejo de Europa · informe Omtzigt (PDF)", "url": "https://www.assembly.coe.int/LifeRay/JUR/Pdf/TextesProvisoires/2019/20190529-CaruanaGaliziaAssassination-EN.pdf" },
+        { "title": "CPJ · resolución del Consejo de Europa", "url": "https://cpj.org/2019/06/cpj-welcomes-resolution-demanding-investigation-in/" },
+        { "title": "RSF · justicia y rule of law", "url": "https://rsf.org/en/rsf-joins-calls-council-europe-ensure-justice-murdered-maltese-journalist-daphne-caruana-galizia" }
+      ],
+      "beHumanAngle": "Denunció en nombre propio durante años. Un seudónimo verificable habría protegido su identidad civil, pero el problema de fondo — represalia contra quien expone poder — exige prueba de persona sin atar el nombre legal a cada publicación."
+    },
+    {
+      "id": "khashoggi",
+      "name": "Jamal Khashoggi",
+      "region": "Medio Oriente · Arabia Saudí / Turquía",
+      "profession": "Periodista y columnista",
+      "age": "59 (al morir)",
+      "country": "Arabia Saudí (residente en EE.UU.)",
+      "city": "Estambul (lugar del crimen)",
+      "organization": "The Washington Post",
+      "outcome": "Asesinato",
+      "photoUrl": "https://www.un.org/en/observances/end-impunity-crimes-against-journalists",
+      "summary": "Crítico del príncipe heredero saudí. Fue asesinado y descuartizado dentro del consulado saudí en Estambul el 2 de octubre de 2018 mientras tramitaba documentos matrimoniales.",
+      "exposed": "Represión interna saudí, guerra en Yemen y conducta del gobierno de Mohammed bin Salman; columnas críticas en medios internacionales.",
+      "media": ["Periódico", "Twitter/X"],
+      "timeline": [
+        { "date": "2017", "event": "Se exilia en EE.UU. tras miedo de represalias." },
+        { "date": "2 oct 2018", "event": "Entra al consulado saudí en Estambul y desaparece." },
+        { "date": "Jun 2019", "event": "Informe de la relatora de la ONU Agnes Callamard: ejecución extrajudicial." },
+        { "date": "Feb 2021", "event": "Inteligencia de EE.UU. evalúa que el príncipe heredero aprobó la operación." }
+      ],
+      "threats": "Vigilancia previa, campañas en redes y, según medios citados por CPJ, interceptaciones que habrían incluido amenazas meses antes.",
+      "whatHappened": "Operativo de 15 agentes saudíes. La ONU documentó audio del consulado; Arabia Saudí reconoció el asesinato pero disputó el rol del príncipe.",
+      "status": "Sanciones occidentales a individuos; impunidad de mandantes de alto nivel según activistas.",
+      "links": [
+        { "title": "ODNI · evaluación desclasificada (PDF)", "url": "https://www.dni.gov/files/ODNI/documents/assessments/Assessment-Saudi-Gov-Role-in-JK-Death-20210226v2.pdf" },
+        { "title": "Al Jazeera · informe ONU Callamard", "url": "https://www.aljazeera.com/news/2019/6/19/credible-evidence-links-mbs-to-khashoggis-murder-un-report" },
+        { "title": "NBC · informe ONU", "url": "https://www.nbcnews.com/news/world/khashoggi-murder-rights-investigator-issue-report-saudi-writer-s-slaying-n1019196" },
+        { "title": "CPJ · documento judicial (PDF)", "url": "https://cpj.org/wp-content/uploads/2019/09/CPJ_Knight_motion_09-27-2019-1.pdf" }
+      ],
+      "beHumanAngle": "Crítico conocido internacionalmente; aun así fue localizable y eliminable. Muestra el límite del anonimato parcial frente a estados con recursos — y la necesidad de separar identidad legal verificada de la firma pública."
+    },
+    {
+      "id": "politkovskaya",
+      "name": "Anna Politkovskaya",
+      "region": "Europa · Rusia",
+      "profession": "Periodista investigativa",
+      "age": "48 (al morir)",
+      "country": "Rusia",
+      "city": "Moscú",
+      "organization": "Novaya Gazeta",
+      "outcome": "Asesinato",
+      "photoUrl": "https://cpj.org/data/people/anna-politkovskaya/",
+      "summary": "Referente de la cobertura de Chechenia y abusos bajo Putin. Asesinada en el ascensor de su edificio el 7 de octubre de 2006.",
+      "exposed": "Torturas, desapariciones y crímenes en Chechenia; corrupción y abusos del aparato de seguridad ruso.",
+      "media": ["Periódico", "Libros", "Investigación propia"],
+      "timeline": [
+        { "date": "1999–2006", "event": "Publica crónicas críticas sobre la segunda guerra de Chechenia." },
+        { "date": "7 oct 2006", "event": "Asesinada en Moscú." },
+        { "date": "2014", "event": "Cinco hombres condenados por ejecutar el crimen." },
+        { "date": "2018", "event": "Tribunal Europeo de Derechos Humanos: Rusia no investigó quién encargó el asesinato." }
+      ],
+      "threats": "Detenciones, envenenamiento previo, hostigamiento y múltiples advertencias por su cobertura en zona de conflicto.",
+      "whatHappened": "Disparos en el ascensor. Ejecutores condenados; mandante no identificado judicialmente.",
+      "status": "Impunidad del autor intelectual; condena del Estado ruso por investigación ineficaz (TEDH).",
+      "links": [
+        { "title": "Reuters · TEDH censura investigación", "url": "https://www.reuters.com/article/world/europe-rights-court-censures-russia-over-journalist-murder-probe-idUSKBN1K71JH/" },
+        { "title": "BBC · condenas 2014", "url": "https://www.bbc.com/news/world-europe-27496916" },
+        { "title": "BBC · cadena perpetua a ejecutores", "url": "https://www.bbc.co.uk/news/world-europe-27760498" },
+        { "title": "Wikipedia · cronología verificable", "url": "https://en.wikipedia.org/wiki/Assassination_of_Anna_Politkovskaya" }
+      ],
+      "beHumanAngle": "Firma pública durante décadas. El caso ilustra cómo la exposición sostenida de identidad convierte a la periodista en blanco fijo para actores armados."
+    },
+    {
+      "id": "lankesh",
+      "name": "Gauri Lankesh",
+      "region": "Asia · India",
+      "profession": "Periodista y activista",
+      "age": "55 (al morir)",
+      "country": "India",
+      "city": "Bengaluru",
+      "organization": "Gauri Lankesh Patrike",
+      "outcome": "Asesinato",
+      "photoUrl": "https://en.wikipedia.org/wiki/Gauri_Lankesh",
+      "summary": "Editora y crítica del extremismo hindutva. Asesinada frente a su casa en septiembre de 2017 por pistoleros en moto.",
+      "exposed": "Nationalismo religioso, linchamientos, corrupción local y violencia contra minorías.",
+      "media": ["Periódico", "Televisión", "Investigación propia"],
+      "timeline": [
+        { "date": "2017", "event": "Continúa publicando críticas al gobierno y movimientos hindutva." },
+        { "date": "5 sep 2017", "event": "Asesinada al abrir la puerta de su casa." },
+        { "date": "2018", "event": "SIT presenta acusación de crimen organizado vinculado a Sanatan Sanstha." },
+        { "date": "2022–", "event": "Juicio en curso contra 17 acusados." }
+      ],
+      "threats": "Campañas de odio en redes, hostigamiento y clima de impunidad documentado por RSF y BBC.",
+      "whatHappened": "Al menos siete disparos. La acusación estatal describe una red que planificó varios homicidios contra críticos del hindutva.",
+      "status": "Juicio activo; varios testigos hostiles según prensa local.",
+      "links": [
+        { "title": "BBC · asesinato y contexto", "url": "https://www.bbc.co.uk/news/world-asia-india-41169817" },
+        { "title": "The Indian Express · acusación SIT", "url": "https://indianexpress.com/article/india/activist-gauri-lankesh-murder-organised-crime-chargesheet-karnataka-police-5462108/" },
+        { "title": "The Wire · retrasos del juicio", "url": "https://m.thewire.in/article/law/gauri-lankesh-murder-trial-delay-seventh-judge" },
+        { "title": "Wikipedia · perfil", "url": "https://en.wikipedia.org/wiki/Gauri_Lankesh" }
+      ],
+      "beHumanAngle": "Identidad y domicilio conocidos. El patrón es clásico: doxxing social + ejecución física contra quien denuncia en nombre propio."
+    },
+    {
+      "id": "breach",
+      "name": "Miroslava Breach Velducea",
+      "region": "América · México",
+      "profession": "Periodista corresponsal",
+      "age": "54 (al morir)",
+      "country": "México",
+      "city": "Chihuahua",
+      "organization": "La Jornada / Norte de Ciudad Juárez",
+      "outcome": "Asesinato",
+      "photoUrl": "https://cpj.org/data/people/miroslava-breach/",
+      "summary": "Cobría narcopolítica en Chihuahua. Asesinada a tiros en su auto frente a su casa en marzo de 2017.",
+      "exposed": "Candidatos de partidos vinculados al cártel de Sinaloa (Los Salazares); corrupción local y narco en elecciones.",
+      "media": ["Periódico", "Investigación propia"],
+      "timeline": [
+        { "date": "4 mar 2016", "event": "Publica sobre narcocandidaturas en La Jornada." },
+        { "date": "23 mar 2017", "event": "Asesinada con ocho disparos en Chihuahua." },
+        { "date": "2020", "event": "Project Miroslava documenta fallas graves en la investigación estatal." },
+        { "date": "2026", "event": "La Jornada reporta mastermind aún fugitivo nueve años después." }
+      ],
+      "threats": "Mensajes intimidatorios previos; grabación en poder de sospechosos donde Breach dice que si van a matar a alguien, que sea a la reportera.",
+      "whatHappened": "Ataque con rifles. Condena a Juan Carlos Moreno Ochoa como autor intelectual; otros implicados muertos o fugitivos.",
+      "status": "Impunidad parcial; FEADLE vincula el crimen con su labor periodística.",
+      "links": [
+        { "title": "CPJ · Project Miroslava", "url": "https://cpj.org/2019/09/project-miroslava-breach-flaws-mexico-murder-investigation/" },
+        { "title": "BBC · condena de 50 años", "url": "https://www.bbc.com/news/world-latin-america-53880211" },
+        { "title": "PEN International · contexto", "url": "https://www.pen-international.org/news/mexico-the-case-miroslava-breach-must-be-completely-clarified" },
+        { "title": "La Jornada · 9 años sin justicia plena", "url": "https://www.jornada.com.mx/2026/03/23/politica/005n1pol" }
+      ],
+      "beHumanAngle": "Narco y política necesitan saber quién filtró qué. Separar identidad verificada de la firma pública complica el mapeo represivo que precede al asesinato."
+    },
+    {
+      "id": "caceres",
+      "name": "Berta Isabel Cáceres Flores",
+      "region": "América · Honduras",
+      "profession": "Activista indígena Lenca / ambientalista",
+      "age": "44 (al morir)",
+      "country": "Honduras",
+      "city": "La Esperanza, Intibucá",
+      "organization": "COPINH",
+      "outcome": "Asesinato",
+      "photoUrl": "https://www.amnesty.org/en/latest/news/2026/03/honduras-10-anos-sin-justicia-para-berta/",
+      "summary": "Líder contra la represa Agua Zarca. Asesinada en su casa en marzo de 2016 tras años de amenazas.",
+      "exposed": "Violaciones de derechos en proyecto hidroeléctrico Agua Zarca; irregularidades y financiamiento internacional.",
+      "media": ["Investigación propia", "Organización", "Prensa"],
+      "timeline": [
+        { "date": "2013–2015", "event": "COPINH moviliza contra Agua Zarca pese a amenazas." },
+        { "date": "2 mar 2016", "event": "Asesinada por sicarios en su domicilio." },
+        { "date": "2021", "event": "David Castillo condenado como coautor." },
+        { "date": "2026", "event": "GIEI concluye que el crimen fue previsible y exige investigar autores intelectuales." }
+      ],
+      "threats": "Medidas cautelares de la CIDH desde 2009; hostigamiento, vigilancia y campañas de estigmatización.",
+      "whatHappened": "Entrada armada a su vivienda. Condenas a ejecutores y a ejecutivo de DESA; debate sobre mandantes financieros y estatales.",
+      "status": "Justicia parcial; investigación de autores intelectuales incompleta según Amnistía y ONU.",
+      "links": [
+        { "title": "Amnistía · 10 años sin justicia plena", "url": "https://www.amnesty.org/en/latest/news/2026/03/honduras-10-anos-sin-justicia-para-berta/" },
+        { "title": "Global Witness · memoria y juicio", "url": "https://www.globalwitness.org/en/blog/remembering-berta-c%C3%A1ceres-seven-years-on-the-fight-for-justice-continues/" },
+        { "title": "OHCHR · recomendaciones GIEI", "url": "https://www.ohchr.org/en/press-releases/2026/04/honduras-must-implement-group-experts-recommendations-berta-caceres-case" },
+        { "title": "Amnistía · condena Castillo", "url": "https://www.amnesty.org/en/latest/news/2021/07/honduras-conviction-of-david-castillo-is-a-step-towards-justice-but-full-truth-must-be-uncovered-2/" }
+      ],
+      "beHumanAngle": "Defensora identificada y visible. El caso conecta denuncia ambiental, financiamiento transnacional e impunidad local — el tipo de causa que beHuman quiere hacer publicable sin atar el nombre civil."
+    },
+    {
+      "id": "franco",
+      "name": "Marielle Franco",
+      "region": "América · Brasil",
+      "profession": "Concejala, activista de DDHH",
+      "age": "38 (al morir)",
+      "country": "Brasil",
+      "city": "Río de Janeiro",
+      "organization": "PSOL / movimientos sociales",
+      "outcome": "Asesinato",
+      "photoUrl": "https://apnews.com/article/brazil-marielle-franco-rio-killing-councilwoman-ce49dc3c4775861e83d4d3d967f9f913",
+      "summary": "Concejala negra, bisexual y defensora de favelas. Asesinada junto a su chofer Anderson Gomes en marzo de 2018.",
+      "exposed": "Violencia policial, milicias, regularización de tierras y negocios ilegales en la zona oeste de Río.",
+      "media": ["Política", "Redes", "Investigación propia"],
+      "timeline": [
+        { "date": "2017", "event": "Oposición a proyecto de regularización que favorecería milicias." },
+        { "date": "14 mar 2018", "event": "Emboscada y asesinato en Río." },
+        { "date": "2024", "event": "Detención de presuntos mandantes Brazão." },
+        { "date": "2026", "event": "Supremo condena a cinco por el crimen." }
+      ],
+      "threats": "Amenazas por criticar milicias y violencia estatal; entorno de extorsión y control territorial armado.",
+      "whatHappened": "Disparos desde otro vehículo. Condenas a mandantes políticos, policía corrupta y sicarios.",
+      "status": "Avance judicial histórico; Amnistía Brasil pide garantías de no repetición.",
+      "links": [
+        { "title": "AP · condenas Supremo 2026", "url": "https://apnews.com/article/brazil-marielle-franco-rio-killing-councilwoman-ce49dc3c4775861e83d4d3d967f9f913" },
+        { "title": "The Guardian · nexo política-milicia", "url": "https://www.theguardian.com/world/2024/mar/26/marielle-franco-assassination-brazil-rio-police-arrests" },
+        { "title": "RFK Human Rights · contexto", "url": "https://kennedyhumanrights.org/our-voices/justice-for-marielle-convictions-of-masterminds-fuel-the-global-fight-against-impunity-in-killings-of-human-rights-defenders/" },
+        { "title": "Agência Brasil · motivo territorial", "url": "https://agenciabrasil.ebc.com.br/en/geral/noticia/2024-03/marielles-murder-linked-criminal-real-estate-expansion-rio" }
+      ],
+      "beHumanAngle": "Figura pública en política local. Muestra que incluso el cargo electo no protege cuando la denuncia toca economías criminales."
+    },
+    {
+      "id": "kuciak",
+      "name": "Ján Kuciak",
+      "region": "Europa · Eslovaquia",
+      "profession": "Periodista investigativo",
+      "age": "27 (al morir)",
+      "country": "Eslovaquia",
+      "city": "Veľká Mača",
+      "organization": "Aktuality.sk / OCCRP",
+      "outcome": "Asesinato",
+      "photoUrl": "https://cpj.org/data/people/jan-kuciak/",
+      "summary": "Investigaba fraude fiscal y la mafia calabresa 'Ndrangheta en Eslovaquia. Asesinado con su prometida Martina Kušnírová en febrero de 2018.",
+      "exposed": "Malversación de fondos europeos; vínculos entre oligarcas, funcionarios y crimen organizado transnacional.",
+      "media": ["Sitio web", "Investigación propia"],
+      "timeline": [
+        { "date": "2017–2018", "event": "Investiga contratos agrícolas y redes 'Ndrangheta." },
+        { "date": "21 feb 2018", "event": "Asesinado en su domicilio." },
+        { "date": "2018", "event": "Protestas masivas; dimisiones de primer ministro y cúpula policial." },
+        { "date": "2025", "event": "Supremo anula por segunda vez absolución de presunto mandante Kočner; nuevo juicio." }
+      ],
+      "threats": "No amenazas públicas formales previas; entorno de corrupción judicial documentado por OCCRP.",
+      "whatHappened": "Disparos en el pecho y la cabeza. Ejecutores condenados; juicio del presunto autor intelectual en curso.",
+      "status": "Justicia parcial; primer periodista asesinado por su trabajo en Eslovaquia según CPJ.",
+      "links": [
+        { "title": "CPJ · perfil", "url": "https://cpj.org/data/people/jan-kuciak/" },
+        { "title": "OCCRP · última investigación", "url": "https://www.occrp.org/en/project/a-murdered-journalists-last-investigation" },
+        { "title": "OCCRP · Kočner's World", "url": "https://www.occrp.org/en/project/a-journalists-undying-legacy/kocners-world" },
+        { "title": "CPJ · presión por mandante", "url": "https://cpj.org/2019/02/cpj-and-ipi-urge-slovak-officials-to-expedite-kuci/" }
+      ],
+      "beHumanAngle": "Caso transfronterizo: corrupción UE + mafia italiana. Ilustra por qué denunciar requiere identidad humana verificable sin exponer datos personales en cada publicación."
+    },
+    {
+      "id": "wickrematunge",
+      "name": "Lasantha Wickrematunge",
+      "region": "Asia · Sri Lanka",
+      "profession": "Director de medios / periodista",
+      "age": "50 (al morir)",
+      "country": "Sri Lanka",
+      "city": "Colombo",
+      "organization": "The Sunday Leader",
+      "outcome": "Asesinato",
+      "photoUrl": "https://cja.org/what-we-do/litigation/wickrematunge-v-rajapaksa/",
+      "summary": "Crítico del gobierno Rajapaksa. Asesinado en enero de 2009 camino al trabajo. Dejó un editorial póstumo: si me matan, fue el gobierno.",
+      "exposed": "Corrupción en compras militares, bunker presidencial de lujo y abusos en la guerra civil.",
+      "media": ["Periódico", "Investigación propia"],
+      "timeline": [
+        { "date": "2006–2008", "event": "Amenazas, intento de arresto y agresiones previas." },
+        { "date": "8 ene 2009", "event": "Atacado por hombres enmascarados en Colombo." },
+        { "date": "2017", "event": "CID implica unidad de inteligencia militar Tripoli Platoon." },
+        { "date": "2022", "event": "Tribunal de periodistas: Estado culpable de violaciones graves." }
+      ],
+      "threats": "Disparos contra su casa (1998), intento de detención por seguridad nacional, quema de imprenta.",
+      "whatHappened": "Ataque con armas blancas según nueva autopsia; investigación con obstrucción y muertes de testigos.",
+      "status": "Impunidad persistente; litigio internacional contra Gotabaya Rajapaksa.",
+      "links": [
+        { "title": "CJA · demanda civil", "url": "https://cja.org/what-we-do/litigation/wickrematunge-v-rajapaksa/" },
+        { "title": "Al Jazeera · escuadrón de la muerte", "url": "https://www.aljazeera.com/news/2017/3/20/ex-leaders-brother-led-death-squad-in-sri-lanka" },
+        { "title": "Genocide Watch · obstrucción del caso", "url": "https://www.genocidewatch.com/single-post/anatomy-of-a-murder-investigation-the-lasantha-wickrematunge-case" },
+        { "title": "Wikipedia · cronología", "url": "https://en.wikipedia.org/wiki/Assassination_of_Lasantha_Wickrematunge" }
+      ],
+      "beHumanAngle": "Previó su muerte por firmar con nombre propio. Ejemplo máximo de autocensura fallida: cuando el poder sabe quién sos, la pluma se vuelve sentencia."
+    },
+    {
+      "id": "martinez",
+      "name": "Regina Martínez Pérez",
+      "region": "América · México",
+      "profession": "Periodista investigativa",
+      "age": "48 (al morir)",
+      "country": "México",
+      "city": "Xalapa, Veracruz",
+      "organization": "Proceso",
+      "outcome": "Asesinato",
+      "photoUrl": "https://cpj.org/data/people/regina-martinez-perez/",
+      "summary": "Corresponsal de Proceso en Veracruz. Asesinada en su casa en abril de 2012 tras décadas cubriendo narcopolítica.",
+      "exposed": "Gobernadores Herrera y Duarte; nexos Zetas-política; ejecuciones y corrupción estatal.",
+      "media": ["Revista", "Investigación propia"],
+      "timeline": [
+        { "date": "Abr 2012", "event": "Asesinada en Xalapa; robo como móvil oficial." },
+        { "date": "2012–2015", "event": "Condena controvertida a Jorge Hernández Silvan." },
+        { "date": "2020", "event": "The Cartel Project y Washington Post reabren líneas de investigación." },
+        { "date": "2020", "event": "AMLO anuncia reapertura de investigación." }
+      ],
+      "threats": "Revistas Proceso retiradas de kioscos; plan documentado para atentar contra editor Jorge Carrasco.",
+      "whatHappened": "Golpes y estrangulamiento. Una sola condena ampliamente cuestionada por tortura al acusado.",
+      "status": "Impunidad e investigación reabierta; Veracruz como epicentro de violencia contra prensa.",
+      "links": [
+        { "title": "CPJ · perfil", "url": "https://cpj.org/data/people/regina-martinez-perez/" },
+        { "title": "OCCRP · Regina Martínez Files", "url": "https://www.occrp.org/en/investigation/the-regina-martinez-files" },
+        { "title": "Washington Post · investigación", "url": "https://www.washingtonpost.com/graphics/2020/investigations/regina-martinez-mexican-journalist-murdered-veracruz/" },
+        { "title": "AP · impunidad en Veracruz", "url": "https://apnews.com/general-news-41d509cc221e47de8c178c2ed8d9c2ed" }
+      ],
+      "beHumanAngle": "Veracruz demostró que investigar gobernadores y cárteles con nombre propio equivale a firmar la sentencia."
+    },
+    {
+      "id": "hussein-suale",
+      "name": "Ahmed Hussein-Suale",
+      "region": "África · Ghana",
+      "profession": "Periodista de investigación",
+      "age": "31 (al morir)",
+      "country": "Ghana",
+      "city": "Accra (Madina)",
+      "organization": "Tiger Eye PI / Anas Aremeyaw Anas",
+      "outcome": "Asesinato",
+      "photoUrl": "https://www.bbc.com/news/world-africa-46902748",
+      "summary": "Parte del equipo que expuso corrupción en el fútbol africano (Number 12). Asesinado en enero de 2019 tras ser doxxeado en TV.",
+      "exposed": "Sobornos en la Ghana Football Association; corrupción deportiva transnacional.",
+      "media": ["Documental", "Investigación propia", "Televisión"],
+      "timeline": [
+        { "date": "2018", "event": "Estreno de investigación Number 12; caída del presidente de la GFA." },
+        { "date": "2018", "event": "Diputado Kennedy Agyapong expone su identidad y llama a agredirlo en TV." },
+        { "date": "16 ene 2019", "event": "Asesinado en su vehículo por motociclistas armados." },
+        { "date": "2020", "event": "Forbidden Stories continúa la investigación." }
+      ],
+      "threats": "Doxxing público con foto y barrio; CPJ pidió al parlamentario que dejara de amenazar periodistas.",
+      "whatHappened": "Tres disparos a quemarropa. Tiger Eye lo calificó de ejecución profesional.",
+      "status": "Investigación penal en curso; arresto de un sospechoso reportado en 2025.",
+      "links": [
+        { "title": "AP · asesinato tras investigación", "url": "https://apnews.com/article/27cc00bdbaf24445a13283e3c459d0db" },
+        { "title": "BBC · doxxing previo", "url": "https://www.bbc.com/news/world-africa-46902748" },
+        { "title": "Reuters · contexto Number 12", "url": "https://www.reuters.com/article/world/gunmen-kill-ghanaian-journalist-who-helped-expose-soccer-graft-idUSKCN1PB22J/" },
+        { "title": "CNN · amenazas del diputado", "url": "https://www.cnn.com/2019/01/17/africa/ghana-undercover-journalist-ahmed-dead" }
+      ],
+      "beHumanAngle": "Caso textbook de doxxing → represalia. beHuman separa la prueba de persona de la exposición del nombre legal en cada denuncia."
+    },
+    {
+      "id": "guajajara",
+      "name": "Paulo Paulino Guajajara (Lobo)",
+      "region": "América · Brasil",
+      "profession": "Guardián forestal indígena Guajajara",
+      "age": "26 (al morir)",
+      "country": "Brasil",
+      "city": "Arariboia, Maranhão",
+      "organization": "Guardians of the Forest / APIB",
+      "outcome": "Asesinato",
+      "photoUrl": "https://www.reuters.com/article/world/illegal-loggers-kill-amazon-indigenous-warrior-who-guarded-forest-wound-another-idUSKBN1XC0GK/",
+      "summary": "Defensor del territorio Arariboia contra tala ilegal. Emboscado y asesinado por loggers en noviembre de 2019.",
+      "exposed": "Deforestación ilegal, incursiones de madereros y amenazas a pueblos aislados Awá.",
+      "media": ["Acción territorial", "Entrevistas", "Organización"],
+      "timeline": [
+        { "date": "2012", "event": "Guajajara crean Guardians of the Forest." },
+        { "date": "2019", "event": "Paulino alerta a Reuters sobre creciente peligro." },
+        { "date": "1 nov 2019", "event": "Emboscado mientras cazaba en Arariboia." },
+        { "date": "2019–", "event": "Global Witness y Amazon Watch documentan impunidad." }
+      ],
+      "threats": "Amenazas constantes de madereros; ausencia de protección estatal documentada por APIB.",
+      "whatHappened": "Disparo en la cabeza. Compañero Laércio herido; un maderero también murió en el enfrentamiento.",
+      "status": "Investigación federal; patrón de violencia contra defensores en la Amazonia.",
+      "links": [
+        { "title": "Reuters · emboscada", "url": "https://www.reuters.com/article/world/illegal-loggers-kill-amazon-indigenous-warrior-who-guarded-forest-wound-another-idUSKBN1XC0GK/" },
+        { "title": "BBC · contexto Bolsonaro", "url": "https://www.bbc.com/news/world-latin-america-50278523" },
+        { "title": "NYT · expansión criminal", "url": "https://www.nytimes.com/2019/11/04/world/americas/brazil-indigenous-amazon.html" },
+        { "title": "Amazon Watch · comunicado", "url": "https://amazonwatch.org/news/2019/1101-indigenous-forest-guardian-murdered-by-illegal-loggers-in-brazilian-amazon" }
+      ],
+      "beHumanAngle": "No era periodista, sino denunciante territorial. La represalia no distingue profesión: castiga a quien hace visible el crimen."
+    },
+    {
+      "id": "ressa",
+      "name": "Maria Ressa",
+      "region": "Asia-Pacífico · Filipinas",
+      "profession": "Periodista / CEO",
+      "age": "61 (2026)",
+      "country": "Filipinas",
+      "city": "Manila",
+      "organization": "Rappler",
+      "outcome": "Persecución judicial",
+      "photoUrl": "https://www.pbs.org/wgbh/frontline/article/rappler-maria-ressa-sec-orders-shutdown-cyber-libel-conviction/",
+      "summary": "Premio Nobel de la Paz 2021. Condenada por ciberdifamación por cobertura crítica de Duterte; múltiples causas legales contra Rappler.",
+      "exposed": "Guerra contra las drogas extrajudicial; desinformación pro-Duterte; corrupción y abusos de poder.",
+      "media": ["Sitio web", "Redes", "Televisión"],
+      "timeline": [
+        { "date": "2016–", "event": "Rappler investiga la guerra contra las drogas." },
+        { "date": "2020", "event": "Condena por ciberlibelo por artículo de 2012." },
+        { "date": "2021", "event": "Nobel de la Paz compartido con Dmitry Muratov." },
+        { "date": "2026", "event": "Fiscal General recomienda absolución ante Corte Suprema." }
+      ],
+      "threats": "Docenas de procesos; órdenes de cierre; acoso en redes orquestado según documentales y RSF.",
+      "whatHappened": "Lawfare: ciberlibelo, impuestos, propiedad extranjera. Condena de hasta 6 años en apelación (2022).",
+      "status": "Apelación pendiente en Corte Suprema; varias causas archivadas o absueltas.",
+      "links": [
+        { "title": "BBC · condena ciberlibelo", "url": "https://bbc.com/news/world-asia-53046052" },
+        { "title": "PBS FRONTLINE · contexto Duterte", "url": "https://www.pbs.org/wgbh/frontline/article/rappler-maria-ressa-sec-orders-shutdown-cyber-libel-conviction/" },
+        { "title": "CBS · sentencia 2020", "url": "https://www.cbsnews.com/news/journalist-maria-ressa-found-guilty-of-cyber-libel-by-philippines-court/" },
+        { "title": "Manila Bulletin · OSG pide absolución 2026", "url": "https://mb.com.ph/2026/03/10/osg-asks-sc-to-acquit-rapplers-ressa-santos-of-cyber-libel" }
+      ],
+      "beHumanAngle": "La plataforma digital amplifica la denuncia pero también el rastreo. Identidad verificable + seudónimo estable permitiría participar sin entregar PII a cada red social."
+    },
+    {
+      "id": "radi",
+      "name": "Omar Radi",
+      "region": "África · Marruecos",
+      "profession": "Periodista investigativo",
+      "age": "38 (al ser detenido)",
+      "country": "Marruecos",
+      "city": "Casablanca",
+      "organization": "Le Desk",
+      "outcome": "Encarcelamiento",
+      "photoUrl": "https://cpj.org/data/people/omar-radi/",
+      "summary": "Investigó corrupción y política de tierras. Condenado a 6 años por espionaje y agresión sexual; grupos de prensa cuestionan el proceso.",
+      "exposed": "Corrupción, desalojos y política agrícola; críticas al establishment marroquí.",
+      "media": ["Sitio web", "Investigación propia"],
+      "timeline": [
+        { "date": "Jun 2020", "event": "Amnistía reporta espionaje con Pegasus." },
+        { "date": "29 jul 2020", "event": "Detenido y acusado de espionaje y agresión." },
+        { "date": "Jul 2021", "event": "Condenado a 6 años." },
+        { "date": "Mar 2022", "event": "Apelación confirma sentencia." }
+      ],
+      "threats": "Vigilancia digital; múltiples citaciones; patrón de acusaciones sexuales contra periodistas según CPJ.",
+      "whatHappened": "Juicio con denuncias de violaciones al debido proceso (CFJ). Sigue en prisión.",
+      "status": "Condena firme; presión internacional por revisión del caso.",
+      "links": [
+        { "title": "CPJ · sentencia", "url": "https://cpj.org/2021/07/moroccan-journalist-omar-radi-sentenced-to-6-years-in-prison-imad-stitou-convicted-of-complicity/" },
+        { "title": "CPJ · perfil", "url": "https://cpj.org/data/people/omar-radi/" },
+        { "title": "Amnistía · juicio injusto", "url": "https://www.amnesty.org/en/latest/press-release/2021/07/morocco-journalist-harassed-by-authorities-must-be-granted-fair-re-trial/" },
+        { "title": "AP · condena", "url": "https://apnews.com/article/technology-africa-government-and-politics-journalists-d541024c3925d21a50d2bf9fee9fb9ac" }
+      ],
+      "beHumanAngle": "Vigilancia + proceso penal = silenciamiento. Prueba de persona sin revelar identidad civil reduce superficie de persecución personalizada."
+    },
+    {
+      "id": "mohammadi",
+      "name": "Narges Mohammadi",
+      "region": "Medio Oriente · Irán",
+      "profession": "Activista de derechos humanos",
+      "age": "54 (2026)",
+      "country": "Irán",
+      "city": "Teherán / Mashhad",
+      "organization": "Defensora de presas políticas",
+      "outcome": "Encarcelamiento",
+      "photoUrl": "https://www.bbc.com/news/articles/clygw161wzvo",
+      "summary": "Nobel de la Paz 2023. Lleva más de una década entre prisión y arrestos domiciliarios por denunciar tortura y represión, especialmente contra mujeres.",
+      "exposed": "Ejecuciones, tortura en prisiones, violencia contra mujeres y represión post-Mahsa Amini.",
+      "media": ["Informes", "Cartas", "Organización"],
+      "timeline": [
+        { "date": "2021", "event": "Condenada a 13 años; continúa activismo desde prisión." },
+        { "date": "Oct 2023", "event": "Nobel de la Paz desde la cárcel." },
+        { "date": "Dic 2024", "event": "Salida médica temporal." },
+        { "date": "2025–2026", "event": "Nuevas detenciones y condenas acumuladas (~44 años totales ordenados)." }
+      ],
+      "threats": "154 latigazos ordenados; aislamiento; deterioro de salud documentado por familia y AP.",
+      "whatHappened": "Ciclos de detención por reunión, propaganda contra el Estado y seguridad nacional.",
+      "status": "En tratamiento médico bajo fianza (mayo 2026); riesgo de reingreso.",
+      "links": [
+        { "title": "BBC · nuevas condenas 2026", "url": "https://www.bbc.com/news/articles/clygw161wzvo" },
+        { "title": "AP · hospitalización 2026", "url": "https://apnews.com/article/iran-narges-mohammadi-hospitalized-nobel-prize-7d559d28fbe4fbd1ed6b262d70187bc7" },
+        { "title": "ABC · sentencia adicional", "url": "https://www.abc.net.au/news/2026-02-09/nobel-peace-laureate-narges-mohammadi-sentenced-iran/106314130" },
+        { "title": "Wikipedia · cronología verificable", "url": "https://en.wikipedia.org/wiki/Narges_Mohammadi" }
+      ],
+      "beHumanAngle": "Denuncia desde adentro del aparato represivo. Sin canales seguros, cada publicación ata la persona física al mensaje."
+    },
+    {
+      "id": "magnitsky",
+      "name": "Serguei Magnitsky",
+      "region": "Europa · Rusia",
+      "profession": "Abogado / denunciante",
+      "age": "37 (al morir)",
+      "country": "Rusia",
+      "city": "Moscú",
+      "organization": "Firestone Duncan / Hermitage Capital",
+      "outcome": "Muerte en custodia",
+      "photoUrl": "https://www.justiceinitiative.org/newsroom/european-court-of-human-rights-finds-russia-responsible-for-death-of-whistleblower-sergei-magnitsky",
+      "summary": "Abogado que expuso un fraude fiscal de 230 millones de USD perpetrado por funcionarios del Ministerio del Interior. Murió en prisión preventiva en 2009.",
+      "exposed": "Reembolsos fraudulentos del fisco ruso tras apropiación de empresas de Hermitage Capital.",
+      "media": ["Documentos legales", "Denuncia formal"],
+      "timeline": [
+        { "date": "2007", "event": "Allanamiento y robo documental a Hermitage." },
+        { "date": "Oct 2008", "event": "Magnitsky testifica contra oficiales del Interior." },
+        { "date": "Nov 2009", "event": "Muere en Matrosskaya Tishina tras negación de atención médica." },
+        { "date": "2019", "event": "TEDH: Rusia responsable por trato inhumano y muerte." }
+      ],
+      "threats": "Arresto por el mismo esquema que denunció; traslado a centro sin atención médica adecuada.",
+      "whatHappened": "Shock tóxico y fallo cardíaco en custodia. Caso originó leyes Magnitsky globales.",
+      "status": "Impunidad de mandantes; condena del Estado ruso en TEDH.",
+      "links": [
+        { "title": "NYT · muerte en prisión", "url": "https://www.nytimes.com/2009/11/18/world/europe/18russia.html" },
+        { "title": "Open Society · TEDH", "url": "https://www.justiceinitiative.org/newsroom/european-court-of-human-rights-finds-russia-responsible-for-death-of-whistleblower-sergei-magnitsky" },
+        { "title": "Consejo de Europa · resolución", "url": "https://assembly.coe.int/nw/xml/XRef/Xref-XML2HTML-en.asp?fileid=20409" },
+        { "title": "WSJ · informe custodia (PDF)", "url": "https://www.wsj.com/public/resources/documents/WSJ-20091229-MagnitskyReport.pdf" }
+      ],
+      "beHumanAngle": "Whistleblower clásico: identificó funcionarios con nombre y evidencia. La represalia vino del aparato que debía investigar."
+    },
+    {
+      "id": "navalny",
+      "name": "Alexei Navalny",
+      "region": "Europa · Rusia",
+      "profession": "Activista anticorrupción / opositor",
+      "age": "47 (al morir)",
+      "country": "Rusia",
+      "city": "Colonia penal ártica",
+      "organization": "FBK (Fundación Anticorrupción)",
+      "outcome": "Muerte en prisión",
+      "photoUrl": "https://www.gov.uk/government/news/joint-statement-by-the-uk-sweden-france-germany-and-the-netherlands-on-alexei-navalnys-death",
+      "summary": "Líder opositor que publicó investigaciones sobre palacios, contratos y élites. Envenenado con Novichok en 2020; murió en prisión en febrero de 2024.",
+      "exposed": "Corrupción de Putin y círculo íntimo; contratos públicos y propiedades de lujo.",
+      "media": ["YouTube", "Investigación propia", "Redes"],
+      "timeline": [
+        { "date": "2011–2020", "event": "Investigaciones FBK y movilizaciones masivas." },
+        { "date": "Ago 2020", "event": "Envenenamiento con Novichok; tratamiento en Alemania." },
+        { "date": "Ene 2021", "event": "Regresa a Rusia; detención inmediata." },
+        { "date": "Feb 2024", "event": "Muerte reportada en colonia IK-3." },
+        { "date": "Feb 2026", "event": "Laboratorios europeos detectan epibatidina en muestras corporales." }
+      ],
+      "threats": "Envenenamientos, detenciones sucesivas, aislamiento y sentencias acumuladas por extremismo.",
+      "whatHappened": "Rusia atribuyó muerte natural; aliados europeos concluyen envenenamiento probable en custodia.",
+      "status": "Investigación internacional; impunidad estatal.",
+      "links": [
+        { "title": "GOV.UK · declaración conjunta 2026", "url": "https://www.gov.uk/government/news/joint-statement-by-the-uk-sweden-france-germany-and-the-netherlands-on-alexei-navalnys-death" },
+        { "title": "AP · toxina rana dardo", "url": "https://apnews.com/article/russia-navalny-poisoned-europe-4d92cd67f29d37b74b0d4842ea686b03" },
+        { "title": "Reuters · aliados europeos", "url": "https://www.reuters.com/world/europe/uk-allies-say-theyre-convinced-kremlin-critic-navalny-was-poisoned-2026-02-14/" },
+        { "title": "Victims of Communism · perfil", "url": "https://victimsofcommunism.org/award/alexei-navalny/" }
+      ],
+      "beHumanAngle": "Construyó oposición con identidad pública total. Muestra el costo de atar tu nombre a cada filtración anticorrupción."
+    },
+    {
+      "id": "marques",
+      "name": "Rafael Marques de Morais",
+      "region": "África · Angola",
+      "profession": "Periodista investigativo",
+      "age": "55 (aprox., activo)",
+      "country": "Angola",
+      "city": "Luanda",
+      "organization": "Maka Angola",
+      "outcome": "Persecución judicial",
+      "photoUrl": "https://frontlinedefenders.org/en/case/case-history-rafael-marques-de-morais",
+      "summary": "Premiado por investigar diamantes de sangre y corrupción presidencial. Múltiples juicios por difamación y ultraje al poder.",
+      "exposed": "Tortura y asesinatos en minas de Lunda Norte; corrupción de generales y expropiación ilegal.",
+      "media": ["Sitio web", "Libros", "Investigación propia"],
+      "timeline": [
+        { "date": "1999", "event": "Prisión por llamar dictador a dos Santos." },
+        { "date": "2011", "event": "Publica Blood Diamonds en Portugal." },
+        { "date": "2015", "event": "Condena suspendida por denuncia calumniosa." },
+        { "date": "2018–", "event": "Juicios por ultraje a cuerpo soberano." }
+      ],
+      "threats": "Demandas de generales y mineras; riesgo de prisión y multas millonarias.",
+      "whatHappened": "Lawfare recurrente en lugar de asesinato; fiscalía desestimó su propia denuncia por crímenes contra la humanidad.",
+      "status": "Sigue publicando; hostigamiento judicial activo según PEN y HRW.",
+      "links": [
+        { "title": "Front Line Defenders · caso", "url": "https://frontlinedefenders.org/en/case/case-history-rafael-marques-de-morais" },
+        { "title": "Human Rights Watch · juicios", "url": "https://www.hrw.org/news/2015/06/18/angola-rights-activists-face-outrageous-trials" },
+        { "title": "The Guardian · perfil 2015", "url": "http://www.theguardian.com/world/2015/mar/22/rafael-marques-de-morais-defies-angolas-president-generals-and-the-power-of-diamond-companies" },
+        { "title": "PEN America · proceso 2018", "url": "https://pen.org/press-release/prosecution-rafael-marques-de-morais-part-angolan-governments-renewed-effort-stifle-free-expression/" }
+      ],
+      "beHumanAngle": "Sobrevive porque el régimen prefiere tribunales a balas — pero el efecto es el mismo: callar la denuncia. Seudónimo verificable cambia la ecuación del miedo."
+    }
+  ]
+}

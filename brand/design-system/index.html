@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>human · Design System</title>
+  <link rel="icon" href="../logos/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      color: var(--c-text);
+      background: var(--c-bg-deep);
+      line-height: var(--lh-normal);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--c-accent-deep); }
+    code { font-family: var(--font-mono); font-size: 0.85em; }
+
+    /* Layout */
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 var(--space-6); }
+    header.hero {
+      background: var(--grad-ink);
+      color: #fff;
+      padding: var(--space-24) 0 var(--space-16);
+    }
+    header.hero .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-accent-soft);
+    }
+    header.hero h1 { font-size: var(--fs-display); font-weight: 800; letter-spacing: -0.03em; margin: var(--space-4) 0 var(--space-2); line-height: var(--lh-tight); }
+    header.hero p { font-size: var(--fs-body-lg); color: rgba(255,255,255,0.7); max-width: 46ch; margin: 0; }
+    header.hero .logo-row { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-12); }
+    header.hero .logo-row img { height: 38px; }
+
+    section { padding: var(--space-16) 0; border-bottom: 1px solid var(--c-border); }
+    .sec-label { font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.16em; text-transform: uppercase; color: var(--c-accent-deep); margin: 0 0 var(--space-2); }
+    h2 { font-size: var(--fs-h2); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 var(--space-2); }
+    h3 { font-size: var(--fs-h3); font-weight: 700; margin: var(--space-8) 0 var(--space-3); }
+    .lead { color: var(--c-text-muted); max-width: 60ch; margin: 0 0 var(--space-8); }
+
+    /* Logos */
+    .logo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
+    .logo-card { border: 1px solid var(--c-border); border-radius: var(--radius-lg); overflow: hidden; }
+    .logo-card .preview { display: grid; place-items: center; padding: var(--space-12); min-height: 150px; }
+    .logo-card .preview.light { background: var(--c-bg); }
+    .logo-card .preview.dark { background: var(--c-ink); }
+    .logo-card .preview.accent { background: var(--grad-accent); }
+    .logo-card img { max-width: 70%; max-height: 64px; }
+    .logo-card .meta { padding: var(--space-3) var(--space-4); border-top: 1px solid var(--c-border); font-size: var(--fs-sm); display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+    .logo-card .meta code { color: var(--c-text-dim); }
+
+    /* Color */
+    .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
+    .swatch { border: 1px solid var(--c-border); border-radius: var(--radius-md); overflow: hidden; }
+    .swatch .chip { height: 84px; }
+    .swatch .info { padding: var(--space-3); font-size: var(--fs-sm); }
+    .swatch .info .name { font-weight: 600; }
+    .swatch .info .hex { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--c-text-dim); text-transform: uppercase; }
+
+    /* Type */
+    .type-row { padding: var(--space-4) 0; border-top: 1px dashed var(--c-border); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4); justify-content: space-between; }
+    .type-row:first-of-type { border-top: none; }
+    .type-row .spec { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--c-text-dim); white-space: nowrap; }
+
+    /* Spacing / radius */
+    .scale-grid { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-end; }
+    .scale-item { text-align: center; font-size: var(--fs-xs); font-family: var(--font-mono); color: var(--c-text-dim); }
+    .scale-item .box { background: var(--c-accent-muted); border: 1px solid var(--c-accent-border); margin: 0 auto var(--space-2); }
+    .radius-item .box { width: 88px; height: 64px; background: var(--c-accent); }
+
+    /* Components */
+    .components { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; }
+    .btn { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-sm); border-radius: var(--radius-pill); padding: 0.7rem 1.4rem; border: 1px solid transparent; cursor: pointer; transition: transform var(--duration-fast) var(--ease-out); }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { background: var(--c-accent); color: #fff; box-shadow: var(--shadow-accent); }
+    .btn-secondary { background: transparent; color: var(--c-ink); border-color: var(--c-border-strong); }
+    .btn-ghost { background: var(--c-accent-subtle); color: var(--c-accent-deep); }
+    .badge { display: inline-flex; align-items: center; gap: 0.4rem; font-size: var(--fs-xs); font-weight: 600; padding: 0.3rem 0.7rem; border-radius: var(--radius-pill); background: var(--c-accent-muted); color: var(--c-accent-deep); border: 1px solid var(--c-accent-border); }
+    .badge.human::before { content: "✓"; }
+    .card-demo { border: 1px solid var(--c-border); border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow-md); max-width: 340px; background: #fff; }
+    .card-demo h4 { margin: 0 0 var(--space-2); }
+    .card-demo p { margin: 0; color: var(--c-text-muted); font-size: var(--fs-sm); }
+
+    /* Do / Dont */
+    .rules { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+    .rule { border-radius: var(--radius-md); padding: var(--space-4) var(--space-6); border: 1px solid var(--c-border); }
+    .rule.do { border-left: 4px solid var(--c-success); }
+    .rule.dont { border-left: 4px solid var(--c-error); }
+    .rule h4 { margin: 0 0 var(--space-2); }
+    .rule ul { margin: 0; padding-left: 1.1rem; color: var(--c-text-muted); font-size: var(--fs-sm); }
+    .rule li { margin-bottom: var(--space-2); }
+
+    footer { padding: var(--space-12) 0; color: var(--c-text-dim); font-size: var(--fs-sm); }
+    @media (max-width: 720px) { .rules { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="logo-row">
+        <img src="../logos/human-horizontal-white.svg" alt="human" />
+      </div>
+      <p class="eyebrow">beHuman · brand &amp; design system</p>
+      <h1>Design System</h1>
+      <p>El lenguaje visual de <strong>human</strong>: identidad real y única, sin exponer quién sos. Esta guía define logos, color, tipografía y componentes.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- LOGO -->
+    <section id="logos">
+      <p class="sec-label">01 · Identidad</p>
+      <h2>Logo</h2>
+      <p class="lead">El isotipo son dos barras inclinadas que avanzan: movimiento, verificación y continuidad. El logotipo se escribe siempre en minúscula: <strong>human</strong>. El nombre de producto es <strong>beHuman</strong>.</p>
+      <div class="logo-grid">
+        <div class="logo-card">
+          <div class="preview light"><img src="../logos/human-horizontal.svg" alt="Lockup horizontal" /></div>
+          <div class="meta"><span>Horizontal</span><code>human-horizontal.svg</code></div>
+        </div>
+        <div class="logo-card">
+          <div class="preview dark"><img src="../logos/human-horizontal-white.svg" alt="Lockup horizontal blanco" /></div>
+          <div class="meta"><span>Horizontal · oscuro</span><code>…-white.svg</code></div>
+        </div>
+        <div class="logo-card">
+          <div class="preview light"><img src="../logos/human-stacked.svg" alt="Lockup vertical" /></div>
+          <div class="meta"><span>Vertical</span><code>human-stacked.svg</code></div>
+        </div>
+        <div class="logo-card">
+          <div class="preview light"><img src="../logos/human-mark.svg" alt="Isotipo" /></div>
+          <div class="meta"><span>Isotipo</span><code>human-mark.svg</code></div>
+        </div>
+        <div class="logo-card">
+          <div class="preview accent"><img src="../logos/human-mark-white.svg" alt="Isotipo blanco" /></div>
+          <div class="meta"><span>Isotipo · sobre acento</span><code>…-white.svg</code></div>
+        </div>
+        <div class="logo-card">
+          <div class="preview light"><img src="../logos/human-mark-celeste.svg" alt="Isotipo celeste" /></div>
+          <div class="meta"><span>Isotipo · celeste</span><code>…-celeste.svg</code></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLOR -->
+    <section id="color">
+      <p class="sec-label">02 · Color</p>
+      <h2>Paleta</h2>
+      <p class="lead">Base monocromática (blanco + escala de grises) con un único acento: <strong>celeste</strong>. El acento se reserva para acciones, foco y momentos clave — nunca como relleno masivo.</p>
+      <h3>Acento</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#38bdf8"></div><div class="info"><div class="name">Accent Bright</div><div class="hex">#38bdf8</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#0ea5e9"></div><div class="info"><div class="name">Accent</div><div class="hex">#0ea5e9</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#0284c7"></div><div class="info"><div class="name">Accent Deep</div><div class="hex">#0284c7</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#7dd3fc"></div><div class="info"><div class="name">Accent Soft</div><div class="hex">#7dd3fc</div></div></div>
+      </div>
+      <h3>Neutros</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#0a0a0a"></div><div class="info"><div class="name">Ink / 900</div><div class="hex">#0a0a0a</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#333333"></div><div class="info"><div class="name">Neutral 700</div><div class="hex">#333333</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#6b6b6b"></div><div class="info"><div class="name">Neutral 500</div><div class="hex">#6b6b6b</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#c4c4c4"></div><div class="info"><div class="name">Neutral 300</div><div class="hex">#c4c4c4</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#ececec"></div><div class="info"><div class="name">Neutral 100</div><div class="hex">#ececec</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#f4f4f4;border-right:1px solid #e2e2e2"></div><div class="info"><div class="name">Background</div><div class="hex">#f4f4f4</div></div></div>
+      </div>
+      <h3>Estados</h3>
+      <div class="swatches">
+        <div class="swatch"><div class="chip" style="background:#16a34a"></div><div class="info"><div class="name">Success</div><div class="hex">#16a34a</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#d97706"></div><div class="info"><div class="name">Warning</div><div class="hex">#d97706</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#dc2626"></div><div class="info"><div class="name">Error</div><div class="hex">#dc2626</div></div></div>
+      </div>
+    </section>
+
+    <!-- TYPE -->
+    <section id="type">
+      <p class="sec-label">03 · Tipografía</p>
+      <h2>Tipografías</h2>
+      <p class="lead"><strong>Plus Jakarta Sans</strong> para todo el texto de interfaz y titulares. <strong>JetBrains Mono</strong> para datos técnicos, etiquetas, código y direcciones on-chain.</p>
+      <div class="type-row"><span style="font-size:3.25rem;font-weight:800;letter-spacing:-0.03em;line-height:1.1">Tu opinión, sin exponer quién sos</span><span class="spec">Display · 800 · -3%</span></div>
+      <div class="type-row"><span style="font-size:2.25rem;font-weight:800;letter-spacing:-0.02em">Una persona real. Una sola vez.</span><span class="spec">H1 · 800</span></div>
+      <div class="type-row"><span style="font-size:1.5rem;font-weight:700">Verificá. Participá. Opiná.</span><span class="spec">H2 · 700</span></div>
+      <div class="type-row"><span style="font-size:1.25rem;font-weight:500">Texto de apoyo y bajadas de sección con buen aire.</span><span class="spec">Body LG · 500</span></div>
+      <div class="type-row"><span style="font-size:1rem">Cuerpo base para párrafos largos y lectura cómoda en la plataforma.</span><span class="spec">Body · 400</span></div>
+      <div class="type-row"><span style="font-family:var(--font-mono);font-size:0.95rem">is_verified(address) → true · platformId · ZK-Groth16</span><span class="spec">Mono · 500</span></div>
+    </section>
+
+    <!-- SPACING -->
+    <section id="scale">
+      <p class="sec-label">04 · Espaciado &amp; radios</p>
+      <h2>Escala</h2>
+      <p class="lead">Escala base de 4px. Radios suaves; el pill se usa para botones y badges.</p>
+      <h3>Espaciado</h3>
+      <div class="scale-grid">
+        <div class="scale-item"><div class="box" style="width:4px;height:4px"></div>1</div>
+        <div class="scale-item"><div class="box" style="width:8px;height:8px"></div>2</div>
+        <div class="scale-item"><div class="box" style="width:16px;height:16px"></div>4</div>
+        <div class="scale-item"><div class="box" style="width:24px;height:24px"></div>6</div>
+        <div class="scale-item"><div class="box" style="width:32px;height:32px"></div>8</div>
+        <div class="scale-item"><div class="box" style="width:48px;height:48px"></div>12</div>
+        <div class="scale-item"><div class="box" style="width:64px;height:64px"></div>16</div>
+      </div>
+      <h3>Radios</h3>
+      <div class="scale-grid">
+        <div class="scale-item radius-item"><div class="box" style="border-radius:0.5rem"></div>sm · 8</div>
+        <div class="scale-item radius-item"><div class="box" style="border-radius:0.75rem"></div>md · 12</div>
+        <div class="scale-item radius-item"><div class="box" style="border-radius:1.25rem"></div>lg · 20</div>
+        <div class="scale-item radius-item"><div class="box" style="border-radius:9999px"></div>pill</div>
+      </div>
+    </section>
+
+    <!-- COMPONENTS -->
+    <section id="components">
+      <p class="sec-label">05 · Componentes</p>
+      <h2>Componentes base</h2>
+      <p class="lead">Patrones recurrentes de la plataforma. El <em>Human badge</em> es la pieza clave: marca contenido de una persona verificada y única.</p>
+      <h3>Botones</h3>
+      <div class="components">
+        <button class="btn btn-primary">Validar mi identidad</button>
+        <button class="btn btn-secondary">Cómo funciona</button>
+        <button class="btn btn-ghost">Conectar wallet</button>
+      </div>
+      <h3>Badges</h3>
+      <div class="components">
+        <span class="badge human">Humano verificado</span>
+        <span class="badge">Opinión</span>
+        <span class="badge">Artículo</span>
+        <span class="badge">Estudio</span>
+      </div>
+      <h3>Card</h3>
+      <div class="components">
+        <div class="card-demo">
+          <span class="badge human" style="margin-bottom:0.75rem">Humano verificado</span>
+          <h4>Seudónimo estable</h4>
+          <p>Tu actividad tiene continuidad y reputación, pero tu identidad real queda protegida.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- USAGE -->
+    <section id="usage">
+      <p class="sec-label">06 · Uso correcto</p>
+      <h2>Buenas prácticas</h2>
+      <div class="rules">
+        <div class="rule do">
+          <h4>Hacé</h4>
+          <ul>
+            <li>Usá el logo con suficiente área de protección (mínimo: la altura del isotipo).</li>
+            <li>Mantené el acento celeste para acciones y foco.</li>
+            <li>Escribí <code>human</code> en minúscula y <code>beHuman</code> con la B mayúscula.</li>
+            <li>Priorizá fondos claros; usá la variante blanca sobre oscuro.</li>
+          </ul>
+        </div>
+        <div class="rule dont">
+          <h4>Evitá</h4>
+          <ul>
+            <li>No deformes, rotes ni cambies el color del isotipo fuera de la paleta.</li>
+            <li>No uses el celeste como fondo dominante de pantallas completas.</li>
+            <li>No pongas el logo oscuro sobre fondos de bajo contraste.</li>
+            <li>No reescribas el nombre como "Human" o "BeHuman".</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    beHuman · ACRC-Zk — Design System v1. Tokens en <code>brand/design-system/tokens.css</code> · Deck en <code>brand/pitch-deck/index.html</code>.
+  </footer>
+</body>
+</html>

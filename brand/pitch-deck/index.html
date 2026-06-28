@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>beHuman · Pitch Deck</title>
+  <link rel="icon" href="../logos/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-system/tokens.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--c-text);
+      background: var(--c-neutral-900);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Deck viewport */
+    .deck { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    .slide {
+      position: relative;
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(2.5rem, 7vw, 7rem);
+      background: var(--c-bg-deep);
+      overflow: hidden;
+    }
+    .slide.dark { background: var(--grad-ink); color: #fff; }
+    .slide.accent { background: var(--grad-accent); color: #fff; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-accent-deep);
+      margin: 0 0 var(--space-4);
+    }
+    .slide.dark .eyebrow, .slide.accent .eyebrow { color: var(--c-accent-soft); }
+    .slide.accent .eyebrow { color: rgba(255,255,255,0.85); }
+
+    h1 { font-size: var(--fs-display); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; margin: 0 0 var(--space-6); }
+    h2 { font-size: var(--fs-h1); font-weight: 800; letter-spacing: -0.025em; line-height: 1.08; margin: 0 0 var(--space-6); max-width: 20ch; }
+    .lead { font-size: var(--fs-body-lg); color: var(--c-text-muted); max-width: 60ch; line-height: 1.5; margin: 0; }
+    .slide.dark .lead, .slide.accent .lead { color: rgba(255,255,255,0.78); }
+    .accent-text { color: var(--c-accent); }
+    .slide.dark .accent-text { color: var(--c-accent-soft); }
+
+    .slide-no { position: absolute; bottom: 1.6rem; right: 2rem; font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--c-text-dim); }
+    .slide.dark .slide-no, .slide.accent .slide-no { color: rgba(255,255,255,0.45); }
+    .brandtag { position: absolute; top: 1.6rem; left: clamp(2.5rem,7vw,7rem); display: flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-text-dim); }
+    .brandtag img { height: 18px; }
+    .slide.dark .brandtag, .slide.accent .brandtag { color: rgba(255,255,255,0.6); }
+
+    /* Cover */
+    .cover-logo { width: min(360px, 60vw); margin-bottom: var(--space-8); }
+    .cover-meta { margin-top: var(--space-12); display: flex; gap: var(--space-8); flex-wrap: wrap; font-family: var(--font-mono); font-size: var(--fs-sm); color: rgba(255,255,255,0.6); }
+    .cover-meta b { color: #fff; font-weight: 600; }
+
+    /* Layout helpers */
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); align-items: center; }
+    .cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+    .stack > * + * { margin-top: var(--space-4); }
+
+    .stat { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+    .stat-label { color: var(--c-text-muted); font-size: var(--fs-sm); margin-top: var(--space-2); }
+    .slide.dark .stat-label { color: rgba(255,255,255,0.65); }
+
+    .card {
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .slide:not(.dark):not(.accent) .card { background: #fff; border: 1px solid var(--c-border); box-shadow: var(--shadow-md); }
+    .card h3 { margin: 0 0 var(--space-2); font-size: var(--fs-h3); font-weight: 700; }
+    .card p { margin: 0; color: var(--c-text-muted); font-size: var(--fs-sm); line-height: 1.5; }
+    .slide.dark .card p, .slide.accent .card p { color: rgba(255,255,255,0.72); }
+    .card .num { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--c-accent); font-weight: 700; }
+
+    ul.checks { list-style: none; padding: 0; margin: var(--space-6) 0 0; }
+    ul.checks li { position: relative; padding-left: 2rem; margin-bottom: var(--space-4); font-size: var(--fs-body-lg); }
+    ul.checks li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--c-accent); font-weight: 800; }
+    .slide.dark ul.checks li::before { color: var(--c-accent-soft); }
+
+    .pill { display: inline-flex; align-items: center; gap: 0.4rem; font-size: var(--fs-xs); font-weight: 600; padding: 0.35rem 0.8rem; border-radius: var(--radius-pill); background: var(--c-accent-muted); color: var(--c-accent-deep); border: 1px solid var(--c-accent-border); }
+    .slide.dark .pill { background: rgba(56,189,248,0.16); color: var(--c-accent-soft); border-color: rgba(56,189,248,0.3); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: var(--space-6); }
+
+    .bridge { font-family: var(--font-mono); font-size: var(--fs-body); padding: var(--space-4) var(--space-6); border-radius: var(--radius-md); background: var(--c-accent-subtle); border: 1px solid var(--c-accent-border); color: var(--c-accent-deep); display: inline-block; }
+    .slide.dark .bridge { background: rgba(56,189,248,0.12); color: var(--c-accent-soft); border-color: rgba(56,189,248,0.28); }
+
+    .layer-row { display: grid; grid-template-columns: auto 1fr; gap: var(--space-6); align-items: start; padding: var(--space-4) 0; border-top: 1px solid var(--c-border); }
+    .slide.dark .layer-row { border-color: rgba(255,255,255,0.12); }
+    .layer-row .ln { font-family: var(--font-mono); font-weight: 700; color: var(--c-accent); font-size: var(--fs-body-lg); }
+    .layer-row h3 { margin: 0 0 0.3rem; }
+    .layer-row p { margin: 0; color: var(--c-text-muted); font-size: var(--fs-sm); }
+    .slide.dark .layer-row p { color: rgba(255,255,255,0.7); }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-top: var(--space-8); }
+    .step .n { font-family: var(--font-mono); color: var(--c-accent); font-weight: 700; font-size: var(--fs-sm); }
+    .step h3 { font-size: 1.05rem; margin: var(--space-2) 0; }
+    .step p { font-size: var(--fs-sm); color: var(--c-text-muted); margin: 0; }
+    .slide.dark .step p { color: rgba(255,255,255,0.7); }
+
+    .arch { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-sm); }
+    .arch .box { border: 1px dashed var(--c-border-strong); border-radius: var(--radius-md); padding: var(--space-4); }
+    .slide.dark .arch .box { border-color: rgba(255,255,255,0.25); }
+    .arch .box b { display:block; color: var(--c-accent); margin-bottom: 0.3rem; }
+
+    .todo { color: var(--c-warn); font-family: var(--font-mono); font-size: var(--fs-xs); }
+
+    .bullets { margin: var(--space-4) 0 0; padding-left: 1.2rem; color: var(--c-text-muted); font-size: var(--fs-sm); line-height: 1.55; }
+    .bullets li { margin-bottom: 0.45rem; }
+    .slide.dark .bullets, .slide.accent .bullets { color: rgba(255,255,255,0.75); }
+    .persona { border-left: 3px solid var(--c-accent); padding-left: var(--space-4); margin-bottom: var(--space-4); }
+    .persona h3 { margin: 0 0 0.25rem; font-size: 1rem; }
+    .persona p { margin: 0; font-size: var(--fs-sm); color: var(--c-text-muted); }
+    .slide.dark .persona p { color: rgba(255,255,255,0.72); }
+    .built-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3); margin-top: var(--space-6); font-size: var(--fs-sm); }
+    .built-item { padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--c-border); background: #fff; }
+    .slide.dark .built-item { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.12); }
+    .built-item b { display: block; color: var(--c-accent-deep); font-family: var(--font-mono); font-size: var(--fs-xs); margin-bottom: 0.25rem; }
+    .built-item span { color: var(--c-text-muted); line-height: 1.45; }
+    .slide.dark .built-item span { color: rgba(255,255,255,0.72); }
+    .stellar-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: var(--space-6); font-family: var(--font-mono); font-size: var(--fs-xs); }
+    .stellar-flow .node { padding: 0.45rem 0.75rem; border-radius: var(--radius-pill); border: 1px solid var(--c-accent-border); background: var(--c-accent-subtle); color: var(--c-accent-deep); }
+    .slide.dark .stellar-flow .node { background: rgba(56,189,248,0.12); color: var(--c-accent-soft); border-color: rgba(56,189,248,0.28); }
+    .stellar-flow .arrow { color: var(--c-text-dim); }
+    .slide.dark .stellar-flow .arrow { color: rgba(255,255,255,0.4); }
+    h2.wide { max-width: none; }
+
+    /* Progress + controls */
+    .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--c-accent); width: 0; z-index: 50; transition: width 0.2s var(--ease-out); }
+    .controls { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 50; }
+    .controls button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--c-border); background: rgba(255,255,255,0.9); cursor: pointer; font-size: 1rem; display: grid; place-items: center; backdrop-filter: blur(8px); }
+    .controls button:hover { border-color: var(--c-accent); color: var(--c-accent-deep); }
+    .hint { position: fixed; bottom: 1.7rem; right: 1.4rem; font-family: var(--font-mono); font-size: 0.7rem; color: rgba(255,255,255,0.45); z-index: 50; }
+
+    @media (max-width: 820px) {
+      .cols, .cols-3, .steps, .arch, .built-grid { grid-template-columns: 1fr; gap: var(--space-6); }
+      .steps { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media print {
+      .deck { height: auto; overflow: visible; scroll-snap-type: none; }
+      .slide { height: 100vh; page-break-after: always; break-after: page; }
+      .progress, .controls, .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <div class="deck" id="deck">
+
+    <!-- 1 · COVER -->
+    <section class="slide dark">
+      <img class="cover-logo" src="../logos/human-horizontal-white.svg" alt="human" />
+      <h1>Tu opinión importa.<br><span class="accent-text">Sin exponer quién sos.</span></h1>
+      <p class="lead"><strong>beHuman</strong> es proof of personhood con Zero-Knowledge sobre Stellar: verificás una vez que sos una persona <strong>real y única</strong>, y después opinás, publicás y financiás causas bajo un seudónimo anónimo — sin que tu DNI ni tu nombre toquen la cadena.</p>
+      <div class="cover-meta">
+        <span>Marca <b>human</b></span>
+        <span>Org <b>ACRC-Zk</b></span>
+        <span>Track <b>Stellar Hacks: Real-World ZK</b></span>
+      </div>
+      <span class="slide-no">01</span>
+    </section>
+
+    <!-- 2 · PROBLEMA -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">El problema</p>
+      <h2 class="wide">Internet no puede distinguir un humano de un bot — ni proteger a quien opina.</h2>
+      <div class="cols">
+        <div>
+          <p class="lead">Los espacios de opinión están rotos por dos extremos opuestos:</p>
+          <ul class="bullets">
+            <li><strong>Identidad expuesta</strong> → autocensura en temas sensibles (salud, política, trabajo).</li>
+            <li><strong>Anonimato total</strong> → bots, granjas de cuentas, spam y desinformación sin costo.</li>
+            <li><strong>KYC tradicional</strong> → entregás PII a cada plataforma; si filtran, no hay vuelta atrás.</li>
+          </ul>
+          <p class="lead" style="margin-top:1rem">No existe hoy un estándar para decir <em>"soy una persona real y única"</em> sin revelar quién sos.</p>
+        </div>
+        <div class="stack">
+          <div class="persona"><h3>Periodista / activista</h3><p>Quiere denunciar sin exponer su nombre ni arriesgar su trabajo.</p></div>
+          <div class="persona"><h3>Ciudadano común</h3><p>Quiere opinar con libertad, pero no confía en que su DNI quede en otro servidor.</p></div>
+          <div class="persona"><h3>Organización / causa</h3><p>Necesita saber que cada voz y cada donación vienen de humanos reales, no de bots.</p></div>
+        </div>
+      </div>
+      <span class="slide-no">02</span>
+    </section>
+
+    <!-- 3 · POR QUÉ AHORA -->
+    <section class="slide dark">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Por qué ahora</p>
+      <h2>Las pruebas ZK ya son prácticas <span class="accent-text">on-chain en Stellar</span>.</h2>
+      <p class="lead">Groth16 sobre <strong>BLS12-381</strong> (host functions nativas de Soroban) hace que verificar una prueba en un contrato sea barato y rápido. Stellar suma finalidad en ~5s y costos mínimos. Por primera vez podés demostrar <em>"soy humano y único"</em> sin entregar tu documento — y registrarlo en una red pública auditable.</p>
+      <ul class="checks">
+        <li>Verificador Groth16 oficial de <code>soroban-examples</code>, extendido con nullifier + address binding.</li>
+        <li>Circuitos Circom compilados con <code>--prime bls12381</code> (alineados al SDK de Soroban).</li>
+        <li>Prueba generada en el <strong>navegador</strong> (snarkjs): la PII nunca sale del dispositivo.</li>
+        <li>Ecosistema Stellar maduro: wallets (Freighter, xBull), DeFindex, Trustless Work.</li>
+      </ul>
+      <span class="slide-no">03</span>
+    </section>
+
+    <!-- 4 · SOLUCIÓN -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">La solución</p>
+      <h2>Una verificación. <span class="accent-text">Tres capas de producto.</span></h2>
+      <p class="lead">Verificás tu humanidad <strong>una sola vez</strong>. Ese hecho se expone por un único puente on-chain — <code>is_verified(address)</code> — y habilita todo lo demás sin volver a pedir tu DNI.</p>
+      <div class="layer-row"><span class="ln">1</span><div><h3>Identidad · KYC-ZK</h3><p>Matcher DNI + rostro en vivo → credencial firmada por issuer → prueba ZK en el cliente → <code>verify_and_register</code> en Soroban. Nullifier anti-Sybil: una persona, un registro.</p></div></div>
+      <div class="layer-row"><span class="ln">2</span><div><h3>Plataforma de opinión</h3><p>Solo humanos verificados publican bajo <code>platformId</code> (seudónimo anónimo persistente). Feed, hilos, mensajes, perfiles. Contenido off-chain + ancla on-chain.</p></div></div>
+      <div class="layer-row"><span class="ln">3</span><div><h3>Funding ZK</h3><p>Campañas con donaciones de humanos verificados, yield en vaults DeFindex/Blend, liberación 2-de-3 vía Trustless Work. Sin custodia opaca.</p></div></div>
+      <p class="bridge" style="margin-top:1.5rem">Puente entre capas → <code>is_verified(address)</code> · identidad anónima → <code>platformId</code></p>
+      <span class="slide-no">04</span>
+    </section>
+
+    <!-- 5 · PÚBLICO OBJETIVO -->
+    <section class="slide accent">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">A quién va dirigido</p>
+      <h2>Para quienes necesitan voz real sin exposición.</h2>
+      <div class="cols-3" style="margin-top:1.5rem">
+        <div class="card"><h3>Usuarios finales</h3><p>Personas que quieren opinar, debatir o donar con privacidad: activistas, profesionales, ciudadanos en temas sensibles. Una verificación, libertad permanente.</p></div>
+        <div class="card"><h3>Comunidades &amp; medios</h3><p>Espacios temáticos (hilos) con calidad garantizada: cada voz es humana y única. Menos moderación reactiva, más confianza en el debate.</p></div>
+        <div class="card"><h3>Builders &amp; dApps</h3><p>Cualquier app en Stellar puede consultar <code>is_verified(address)</code> o integrar el SDK. Infraestructura de personhood reutilizable — no solo nuestro producto.</p></div>
+      </div>
+      <p class="lead" style="margin-top:2rem;color:rgba(255,255,255,0.85)">MVP enfocado en <strong>Argentina</strong> (Ley 25.326, DNI local, issuer mock). Arquitectura lista para issuer regulado (RENAPER) y mainnet.</p>
+      <span class="slide-no">05</span>
+    </section>
+
+    <!-- 6 · CÓMO FUNCIONA -->
+    <section class="slide dark">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Cómo funciona</p>
+      <h2>De tu DNI a humano verificado, <span class="accent-text">sin filtrar datos</span>.</h2>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Gate de identidad</h3><p>Subís DNI + selfies en vivo. Matcher: face match 1:1, liveness (parpadeo/giro), OCR del documento. Imágenes solo en memoria.</p></div>
+        <div class="step"><div class="n">02</div><h3>Prueba ZK local</h3><p>El circuito <code>kyc.circom</code> en tu navegador demuestra: credencial válida, nullifier único, binding a tu address Stellar.</p></div>
+        <div class="step"><div class="n">03</div><h3>Registro Soroban</h3><p><code>verify_and_register</code> en <code>kyc_verifier</code>. Tu wallet firma. El contrato verifica Groth16 y persiste el nullifier.</p></div>
+        <div class="step"><div class="n">04</div><h3>Identidad de plataforma</h3><p>Derivás <code>platformId</code> de tu secreto. Publicás, debatís y donás bajo seudónimo — sin address ni PII visibles.</p></div>
+      </div>
+      <span class="slide-no">06</span>
+    </section>
+
+    <!-- 7 · QUÉ CONSTRUIMOS -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">Qué construimos</p>
+      <h2 class="wide">Monorepo completo: de circuito ZK a app social en testnet.</h2>
+      <div class="built-grid">
+        <div class="built-item"><b>identity/circuits</b><span>Circuito <code>kyc.circom</code> (BLS12-381): commitment, nullifier, issuer root, address binding. Scripts compile/setup/prove.</span></div>
+        <div class="built-item"><b>identity/contracts</b><span><code>kyc_verifier</code> Soroban: Groth16 + anti-Sybil + <code>is_verified()</code>. Suite de tests con prueba real.</span></div>
+        <div class="built-item"><b>identity/issuer</b><span>Matcher HTTP: face-api + tfjs-node, liveness, OCR (Tesseract), anti-dedup <code>sha256(docId+pepper)</code>, enroll de credencial.</span></div>
+        <div class="built-item"><b>platform/contracts</b><span><code>opinion_board</code>: registro de <code>platformId</code> y anclaje de posts vía prueba ZK (sin address on-chain).</span></div>
+        <div class="built-item"><b>platform/api + curation</b><span>Feed, perfiles, posts off-chain. Curaduría Nivel 1 con Claude API + cola de moderación humana.</span></div>
+        <div class="built-item"><b>funding/</b><span>API de campañas, donaciones gateadas, release 2-de-3, DeFindex + Trustless Work. Contrato <code>campaign_controller</code>.</span></div>
+        <div class="built-item"><b>packages/sdk</b><span>Prover, orquestación de tx Stellar, integraciones DeFindex/TW, auth de firmas para release.</span></div>
+        <div class="built-item"><b>web/</b><span>React + Vite: landing, KYC flow (DNI/cámara/ZK), wallet Stellar, feed social, hilos, mensajes, causas/funding. ES/EN.</span></div>
+      </div>
+      <span class="slide-no">07</span>
+    </section>
+
+    <!-- 8 · CAPA 1 -->
+    <section class="slide dark">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Capa 1 · Identidad</p>
+      <h2>El puente: <span class="accent-text">una persona, una identidad</span>.</h2>
+      <div class="cols">
+        <div>
+          <p class="lead">Corazón criptográfico del sistema. El circuito prueba que tenés una credencial válida del issuer, que el nullifier no fue usado, y que la prueba está atada a tu address Stellar — sin revelar documento ni datos personales.</p>
+          <ul class="checks">
+            <li>Public inputs: <code>commitment, nullifier, issuerRoot, addressHash</code></li>
+            <li><code>address.require_auth()</code> — solo vos podés registrarte</li>
+            <li>Nullifier persistente — imposible doble registro (anti-Sybil)</li>
+            <li><code>is_verified(address)</code> — API pública para cualquier dApp</li>
+          </ul>
+        </div>
+        <div class="stack">
+          <div class="card"><span class="num">circom · bls12381</span><h3>kyc.circom</h3><p>Verifica firma del issuer mock, computa nullifier y address hash. Compilado con prime BLS12-381 (nativo en Soroban).</p></div>
+          <div class="card"><span class="num">soroban</span><h3>kyc_verifier</h3><p>Pairing Groth16 sobre BLS12-381 (mismo patrón que <code>groth16_verifier</code> oficial). Tests con prueba válida + rechazo de inputs alterados.</p></div>
+          <div class="card"><span class="num">matcher · :8787</span><h3>Gate off-chain</h3><p>Face match euclidiano, liveness activo, OCR de DNI, dedup por hash de documento. Respuesta PII-free. Issuer mock declarado.</p></div>
+        </div>
+      </div>
+      <span class="slide-no">08</span>
+    </section>
+
+    <!-- 9 · CAPA 2 -->
+    <section class="slide accent">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Capa 2 · Plataforma</p>
+      <h2>Un lugar para hablar con libertad.</h2>
+      <p class="lead">Red social verificada: feed, hilos temáticos, mensajes directos, perfiles con seudónimo. Cada publicación pasa curaduría antes de aparecer. El contenido vive off-chain; la cadena solo ancla <em>quién (platformId) + qué (hash)</em>.</p>
+      <div class="cols-3" style="margin-top:2rem">
+        <div class="card"><h3>Publicaciones verificadas</h3><p>Opiniones, artículos y estudios. Cada post anclado on-chain con prueba ZK de pertenencia al árbol del issuer.</p></div>
+        <div class="card"><h3>Seudónimo estable</h3><p><code>platformId = Poseidon(secret, scope)</code>. Reputación y continuidad sin exponer address ni nombre real.</p></div>
+        <div class="card"><h3>Curaduría en 2 niveles</h3><p>Nivel 1: agente Claude (toxicidad, incoherencia, plagio). Nivel 2: moderación humana para casos ambiguos. No se censuran opiniones legítimas.</p></div>
+      </div>
+      <span class="slide-no">09</span>
+    </section>
+
+    <!-- 10 · CAPA 3 FUNDING -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">Capa 3 · Funding ZK</p>
+      <h2>Financiar causas <span class="accent-text">como humano único</span>.</h2>
+      <div class="cols">
+        <div>
+          <p class="lead">Campañas con meta, deadline y hitos. Solo humanos verificados donan u opinan (prueba de membresía). Los fondos generan yield en vaults mientras esperan; se liberan con firma 2-de-3 (causa + plataforma + árbitro neutral) o se reembolsan si no se alcanza la meta.</p>
+          <ul class="bullets">
+            <li>Donación gateada por <code>verifyMembership</code> (personhood sin PII).</li>
+            <li>Escrow Trustless Work con milestones y dispute resolver.</li>
+            <li>Release exige firmas criptográficas reales (challenge determinístico).</li>
+            <li>Refund todo-o-nada si vence el deadline sin meta.</li>
+          </ul>
+        </div>
+        <div class="stack">
+          <div class="card"><span class="num">DeFindex · Blend</span><h3>Yield mientras espera</h3><p>Depósitos en vault XLM/USDC. El capital de la campaña rinde hasta el release o refund.</p></div>
+          <div class="card"><span class="num">Trustless Work</span><h3>Escrow no custodial</h3><p>Deploy de escrow, release 2-de-3, refund automático. Provider <code>dev</code> para demo local.</p></div>
+          <div class="card"><span class="num">campaign_controller</span><h3>Reglas on-chain</h3><p>Contrato Soroban: deadline, meta, firmas autorizadas. La API orquesta; el contrato es autoridad final.</p></div>
+        </div>
+      </div>
+      <span class="slide-no">10</span>
+    </section>
+
+    <!-- 11 · CÓMO USAMOS STELLAR -->
+    <section class="slide dark">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Stellar en la práctica</p>
+      <h2 class="wide">Stellar no es solo la red — es cada capa del producto.</h2>
+      <div class="stellar-flow">
+        <span class="node">Wallet (Freighter)</span><span class="arrow">→</span>
+        <span class="node">Prueba ZK (snarkjs)</span><span class="arrow">→</span>
+        <span class="node">kyc_verifier (Soroban)</span><span class="arrow">→</span>
+        <span class="node">is_verified ✓</span>
+      </div>
+      <div class="stellar-flow" style="margin-top:0.75rem">
+        <span class="node">platformId + post ZK</span><span class="arrow">→</span>
+        <span class="node">opinion_board (Soroban)</span><span class="arrow">→</span>
+        <span class="node">Feed off-chain</span>
+      </div>
+      <div class="stellar-flow" style="margin-top:0.75rem">
+        <span class="node">Donación verificada</span><span class="arrow">→</span>
+        <span class="node">DeFindex vault</span><span class="arrow">→</span>
+        <span class="node">Trustless Work escrow</span><span class="arrow">→</span>
+        <span class="node">Release 2-de-3</span>
+      </div>
+      <div class="cols-3" style="margin-top:2rem">
+        <div><div class="stat accent-text">~5s</div><div class="stat-label">finalidad Soroban — registro casi instantáneo.</div></div>
+        <div><div class="stat accent-text">&lt;$0.01</div><div class="stat-label">por tx — viable para verificar millones de personas.</div></div>
+        <div><div class="stat accent-text">BLS12-381</div><div class="stat-label">Groth16 nativo — sin bridges ni oráculos de confianza.</div></div>
+      </div>
+      <div class="tags">
+        <span class="pill">Stellar RPC</span><span class="pill">Soroban</span><span class="pill">Friendbot (testnet)</span>
+        <span class="pill">DeFindex API</span><span class="pill">Blend vaults</span><span class="pill">Trustless Work</span>
+      </div>
+      <span class="slide-no">11</span>
+    </section>
+
+    <!-- 12 · ARQUITECTURA -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">Arquitectura</p>
+      <h2>Stack de extremo a extremo.</h2>
+      <div class="arch">
+        <div class="box"><b>web/ · :5173</b>React + Vite + TS. KYC flow (cámara, DNI, snarkjs), wallet kit Stellar, feed social, causas. i18n ES/EN.</div>
+        <div class="box"><b>identity/issuer · :8787</b>Matcher Express: face-api, liveness, OCR, enroll. Imágenes en memoria, dedup anti-Sybil.</div>
+        <div class="box"><b>platform/api · :8788</b>Feed, perfiles, posts off-chain, integración curaduría Claude. Gating por platformId.</div>
+        <div class="box"><b>funding/api · :8789</b>Campañas, donaciones, release/refund, providers DeFindex + TW (dev/real).</div>
+        <div class="box"><b>packages/sdk</b>Prover Groth16, tx Soroban, content hash, funding auth, integraciones externas.</div>
+        <div class="box"><b>contratos Soroban</b>kyc_verifier · opinion_board · campaign_controller. Workspace Cargo único.</div>
+      </div>
+      <p class="lead" style="margin-top:1.5rem">Modelo híbrido: <strong>prueba + registro on-chain</strong> (ligero, auditable) + <strong>contenido off-chain</strong> (texto, PDFs, feed). Sin PII en ninguna capa pública.</p>
+      <span class="slide-no">12</span>
+    </section>
+
+    <!-- 13 · PRIVACIDAD -->
+    <section class="slide dark">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Privacidad &amp; cumplimiento</p>
+      <h2>Privacidad por diseño, no por promesa.</h2>
+      <ul class="checks">
+        <li>Imágenes de DNI y rostro <strong>solo en memoria</strong> (multer memoryStorage): nunca a disco, nunca al log.</li>
+        <li>Matcher devuelve solo <code>{ ok, score, distance, reasons }</code> — cero PII en la respuesta.</li>
+        <li>Anti-Sybil sin guardar el documento: <code>sha256(docId + DEDUP_PEPPER)</code> en el issuer.</li>
+        <li>Curaduría recibe solo contenido + seudónimo — nunca address ni datos del KYC.</li>
+        <li>Alineado con <strong>Ley 25.326</strong> (Argentina). Issuer mock en testnet — no sustituye KYC regulado.</li>
+      </ul>
+      <span class="slide-no">13</span>
+    </section>
+
+    <!-- 14 · DEMO -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">Demo · producto</p>
+      <h2>Corriendo hoy en local.</h2>
+      <div class="cols">
+        <div>
+          <p class="lead">Flujo completo levantable con <code>npm install</code> + 4 servicios de desarrollo. El usuario recorre: landing → registro → verificación DNI/cámara → prueba ZK → wallet → feed social → causas.</p>
+          <ul class="bullets">
+            <li>Landing con secciones de producto (ES/EN)</li>
+            <li>Auth sin email: wallet Stellar + credencial local</li>
+            <li>KYC: upload DNI, escaneo facial, generación de prueba en browser</li>
+            <li>App social: feed, hilos, mensajes, perfiles, compositor de posts</li>
+            <li>Causas: crear campaña, donar, release con firmas 2-de-3</li>
+          </ul>
+          <p class="todo" style="margin-top:1rem">▸ Agregar capturas/GIF y link al video de la demo para el jurado.</p>
+        </div>
+        <div class="arch" style="grid-template-columns:1fr">
+          <div class="box"><b>web</b>localhost:5173 — landing + app</div>
+          <div class="box"><b>matcher</b>localhost:8787 — gate identidad</div>
+          <div class="box"><b>platform api</b>localhost:8788 — feed / posts</div>
+          <div class="box"><b>funding api</b>localhost:8789 — campañas</div>
+          <div class="box"><b>testnet</b>Soroban + Friendbot para fondear cuentas</div>
+        </div>
+      </div>
+      <span class="slide-no">14</span>
+    </section>
+
+    <!-- 15 · ROADMAP -->
+    <section class="slide dark">
+      <span class="brandtag"><img src="../logos/human-mark-white.svg" alt="">beHuman</span>
+      <p class="eyebrow">Estado &amp; roadmap</p>
+      <h2>De hackathon a infraestructura.</h2>
+      <div class="cols-3" style="margin-top:1rem">
+        <div class="card"><span class="num">Hoy · hackathon</span><h3>MVP funcional</h3><p>Circuito + contratos + matcher + app social + funding API en testnet. Demo E2E local. Issuer mock.</p></div>
+        <div class="card"><span class="num">Próximo</span><h3>Deploy testnet</h3><p>Contratos desplegados, video demo, integración real DeFindex/TW, almacenamiento IPFS para contenido.</p></div>
+        <div class="card"><span class="num">Visión</span><h3>Infra abierta</h3><p>Issuer regulado (RENAPER), SDK público de <code>is_verified</code>, mainnet, integraciones de terceros.</p></div>
+      </div>
+      <span class="slide-no">15</span>
+    </section>
+
+    <!-- 16 · EQUIPO -->
+    <section class="slide">
+      <span class="brandtag"><img src="../logos/human-mark.svg" alt="">beHuman</span>
+      <p class="eyebrow">Equipo</p>
+      <h2>ACRC-Zk</h2>
+      <p class="lead">Construido para <strong>Stellar Hacks: Real-World ZK</strong> — proof of personhood real con ZK on-chain, no solo un concepto.<br><span class="todo">▸ Completar integrantes, roles y links (GitHub / LinkedIn).</span></p>
+      <div class="cols-3" style="margin-top:2rem">
+        <div class="card"><h3>Nombre</h3><p>Rol · circuitos ZK / contratos Soroban / frontend / matcher.</p></div>
+        <div class="card"><h3>Nombre</h3><p>Rol · qué construye en beHuman.</p></div>
+        <div class="card"><h3>Nombre</h3><p>Rol · qué construye en beHuman.</p></div>
+      </div>
+      <span class="slide-no">16</span>
+    </section>
+
+    <!-- 17 · CIERRE -->
+    <section class="slide accent">
+      <img class="cover-logo" src="../logos/human-mark-white.svg" alt="human" style="width:120px" />
+      <h1 style="max-width:18ch">Una persona real.<br>Una sola vez.</h1>
+      <p class="lead" style="color:rgba(255,255,255,0.9)">Identidad humana verificable y privada como infraestructura abierta sobre Stellar. Empezamos por la opinión; escalamos a todo lo que necesite saber que del otro lado hay un humano único.</p>
+      <div class="cover-meta" style="color:rgba(255,255,255,0.85)">
+        <span>GitHub <b>github.com/ACRC-Zk/beHuman</b></span>
+        <span><b>contacto@</b> ▸ completar</span>
+      </div>
+      <span class="slide-no">17</span>
+    </section>
+
+  </div>
+
+  <div class="controls">
+    <button id="prev" aria-label="Anterior">←</button>
+    <button id="next" aria-label="Siguiente">→</button>
+  </div>
+  <div class="hint">← → · espacio · F = pantalla completa · P = imprimir/PDF</div>
+
+  <script>
+    const deck = document.getElementById('deck');
+    const slides = Array.from(deck.querySelectorAll('.slide'));
+    const progress = document.getElementById('progress');
+    let current = 0;
+
+    function go(i) {
+      current = Math.max(0, Math.min(slides.length - 1, i));
+      slides[current].scrollIntoView({ behavior: 'smooth' });
+    }
+    function updateProgress() {
+      const i = Math.round(deck.scrollTop / window.innerHeight);
+      current = i;
+      progress.style.width = ((i) / (slides.length - 1) * 100) + '%';
+    }
+    deck.addEventListener('scroll', () => { window.requestAnimationFrame(updateProgress); });
+
+    document.getElementById('next').addEventListener('click', () => go(current + 1));
+    document.getElementById('prev').addEventListener('click', () => go(current - 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(current + 1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); go(current - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); go(0); }
+      else if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+      else if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+      else if (e.key.toLowerCase() === 'p') { e.preventDefault(); window.print(); }
+    });
+    updateProgress();
+  </script>
+</body>
+</html>
