@@ -85,12 +85,12 @@ export function CausesPage() {
 
   return (
     <div className="causes-page">
-      <header className="feed-column__top">
-        <p className="feed-column__subtitle" style={{ marginTop: 0 }}>
-          {cpy.eyebrow}
-        </p>
-        <h1 className="feed-column__title">{cpy.title}</h1>
-        <p className="feed-column__subtitle">{cpy.subtitle}</p>
+      <header className="feed-column__top shell-page-header">
+        <div className="shell-page-header__intro">
+          <p className="shell-page-header__eyebrow">{cpy.eyebrow}</p>
+          <h1 className="shell-page-header__title">{cpy.title}</h1>
+          <p className="shell-page-header__lead">{cpy.subtitle}</p>
+        </div>
       </header>
 
       <div className="shell-page__body">

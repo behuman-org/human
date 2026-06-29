@@ -25,10 +25,10 @@ export function ExplorePage() {
 
   return (
     <div className="explore-page">
-      <header className="feed-column__top page-header-split">
-        <div>
-          <h1 className="feed-column__title">{e.title}</h1>
-          <p className="feed-column__subtitle">{e.subtitle}</p>
+      <header className="feed-column__top shell-page-header page-header-split">
+        <div className="shell-page-header__intro">
+          <h1 className="shell-page-header__title">{e.title}</h1>
+          <p className="shell-page-header__lead">{e.subtitle}</p>
         </div>
         <div className="page-header-split__actions">
           <button type="button" className="explore-page__create" onClick={() => setCreateOpen(true)}>

@@ -24,6 +24,22 @@ interface PostCardProps {
   showVotes?: boolean;
 }
 
+function PostBodyContent({ content }: { content: string }) {
+  const blocks = content.split(/\n{2,}/).filter((block) => block.trim().length > 0);
+  if (blocks.length <= 1) {
+    return <p className="voice-card__body">{content}</p>;
+  }
+  return (
+    <div className="voice-card__body-stack">
+      {blocks.map((block, index) => (
+        <p key={index} className="voice-card__body-para">
+          {block.trimEnd()}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export function PostCard({ post, showVotes = false }: PostCardProps) {
   const { locale, t } = useI18n();
   const p = t.social.postCard;
@@ -112,23 +128,32 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
           >
             <UserAvatar user={avatarUser} size="sm" verified />
           </Link>
-          <div className="voice-card__who">
-            <Link to={authorPath} className="voice-card__name">
-              {name}
-            </Link>
-            <span className="voice-card__handle">@{post.handle}</span>
-            {community && <CommunityChip community={community} size="md" />}
+          <div className="voice-card__meta">
+            <div className="voice-card__title-row">
+              <Link to={authorPath} className="voice-card__name">
+                {name}
+              </Link>
+              <time dateTime={new Date(post.ts).toISOString()} className="voice-card__time">
+                {formatTimeAgo(post.ts, locale)}
+              </time>
+            </div>
+            <div className="voice-card__submeta">
+              <span className="voice-card__handle">@{post.handle}</span>
+              {community && (
+                <>
+                  <span className="voice-card__sep" aria-hidden="true">
+                    ·
+                  </span>
+                  <CommunityChip community={community} size="sm" />
+                </>
+              )}
+            </div>
           </div>
-          <div className="voice-card__head-end">
-            <time dateTime={new Date(post.ts).toISOString()} className="voice-card__time">
-              {formatTimeAgo(post.ts, locale)}
-            </time>
-            <PostMenu postId={post.id} />
-          </div>
+          <PostMenu postId={post.id} />
         </header>
 
         <Link to={`/app/post/${post.id}`} className="voice-card__body-link">
-          <p className="voice-card__body">{post.content}</p>
+          <PostBodyContent content={post.content} />
         </Link>
 
         {post.curationStatus === "flagged" && <p className="voice-card__mod">{p.moderationReview}</p>}
@@ -143,18 +168,19 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
             title={didResonate ? p.resonateRemove : p.resonateAnon}
           >
             <IconResuena />
-            <span>
-              {resonating
-                ? "…"
-                : `${p.resonate}${resonateCount > 0 ? ` · ${resonateCount}` : ""}`}
+            <span className="voice-card__action-text">
+              {resonating ? "…" : p.resonate}
             </span>
+            {!resonating && resonateCount > 0 && (
+              <span className="voice-card__action-count">{resonateCount}</span>
+            )}
           </button>
           <Link to={`/app/post/${post.id}`} className="voice-card__action" aria-label={p.reply}>
             <IconResponder />
-            <span>
-              {p.reply}
-              {post.replyCount > 0 ? ` · ${post.replyCount}` : ""}
-            </span>
+            <span className="voice-card__action-text">{p.reply}</span>
+            {post.replyCount > 0 && (
+              <span className="voice-card__action-count">{post.replyCount}</span>
+            )}
           </Link>
           {post.txHash && /^[0-9a-f]{64}$/i.test(post.txHash) ? (
             <a

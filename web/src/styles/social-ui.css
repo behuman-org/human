@@ -15,7 +15,7 @@
   touch-action: manipulation;
 }
 
-.social-shell .feed-column__top {
+.social-shell .feed-column__top:not(.shell-page-header) {
   padding-top: max(0.75rem, var(--safe-top));
 }
 
@@ -43,6 +43,15 @@
     align-items: stretch;
   }
 
+  .shell-page-header.page-header-split {
+    align-items: stretch;
+    gap: var(--space-5);
+  }
+
+  .shell-page-header.page-header-split .page-header-split__actions {
+    padding-bottom: 0;
+  }
+
   .page-header-split__actions {
     width: 100%;
   }
@@ -54,10 +63,6 @@
   }
 }
 
-.shell-page__body {
-  padding: 0 1rem calc(1rem + var(--safe-bottom));
-}
-
 .causes-page,
 .articles-page {
   min-height: 100vh;
@@ -66,10 +71,76 @@
 
 .causes-page__grid,
 .articles-page__list {
-  padding-bottom: 0.5rem;
+  padding: var(--space-2) 0 var(--space-3);
+}
+
+.articles-page__empty,
+.causes-page__empty {
+  margin: 0;
 }
 
 .feed-empty {
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: var(--app-gutter);
+  padding-right: var(--app-gutter);
+}
+
+.shell-page__body {
+  padding: var(--space-4) var(--app-gutter) calc(var(--space-5) + var(--safe-bottom));
+}
+
+/* Encabezados de sección (artículos, causas, explorar…) — más aire que el feed compacto */
+.shell-page-header {
+  padding: max(var(--space-5), var(--safe-top)) var(--app-gutter) var(--space-5);
+}
+
+.shell-page-header__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  max-width: 40rem;
+}
+
+.shell-page-header__eyebrow {
+  margin: 0 0 var(--space-3);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: var(--color-accent-deep);
+}
+
+.shell-page-header__title {
+  margin: 0 0 var(--space-4);
+  font-size: clamp(1.35rem, 4.2vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.shell-page-header__intro:not(:has(.shell-page-header__lead)) .shell-page-header__title {
+  margin-bottom: 0;
+}
+
+.shell-page-header__lead {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.shell-page-header.page-header-split {
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.shell-page-header.page-header-split .shell-page-header__intro {
+  flex: 1;
+}
+
+.shell-page-header.page-header-split .page-header-split__actions {
+  padding-bottom: 0.1rem;
 }

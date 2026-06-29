@@ -3,6 +3,7 @@ import type { UserProfile } from "./types";
 // Preferencias locales (username/bio/avatar). El platformId NO se guarda acá: se deriva de la
 // credencial Capa 1 (prueba ZK) y vive en memoria como identidad activa de la sesión.
 const PREFS_KEY = "behuman_platform_prefs";
+const LOGOUT_FLAG = "behuman_session_logged_out";
 
 // Identidad anónima activa (platformId hex). null = invitado (sin credencial en el device).
 let activePlatformId: string | null = null;
@@ -11,6 +12,32 @@ export function setActiveIdentity(platformId: string | null): void {
 }
 export function getActivePlatformId(): string | null {
   return activePlatformId;
+}
+
+/** Marca la sesión como cerrada (persiste hasta el próximo login explícito). */
+export function markLoggedOut(): void {
+  setActiveIdentity(null);
+  try {
+    sessionStorage.setItem(LOGOUT_FLAG, "1");
+  } catch {
+    /* ignore */
+  }
+}
+
+export function clearLoggedOut(): void {
+  try {
+    sessionStorage.removeItem(LOGOUT_FLAG);
+  } catch {
+    /* ignore */
+  }
+}
+
+export function isLoggedOut(): boolean {
+  try {
+    return sessionStorage.getItem(LOGOUT_FLAG) === "1";
+  } catch {
+    return false;
+  }
 }
 
 // Override de desarrollo opcional (vacío por defecto → identidad real desde la credencial).

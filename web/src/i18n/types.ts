@@ -170,12 +170,16 @@ export interface SiteMessages {
       ariaChat: string;
     };
     feed: {
+      eyebrow: string;
       title: string;
+      subtitle: string;
       sortNew: string;
       sortHot: string;
+      sortAria: string;
       loading: string;
       empty: string;
       errorLoad: string;
+      retry: string;
       threadEyebrow: string;
       members: string;
       postsAria: string;
@@ -219,6 +223,8 @@ export interface SiteMessages {
       account: string;
       editProfileHint: string;
       goToProfile: string;
+      logout: string;
+      logoutHint: string;
       reset: string;
       resetDone: string;
     };

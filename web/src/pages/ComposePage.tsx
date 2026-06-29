@@ -19,9 +19,11 @@ export function ComposePage() {
 
   return (
     <div className="feed-column">
-      <header className="feed-column__top">
-        <h1 className="feed-column__title">{c.title}</h1>
-        <p className="feed-column__subtitle">{c.subtitle}</p>
+      <header className="feed-column__top shell-page-header">
+        <div className="shell-page-header__intro">
+          <h1 className="shell-page-header__title">{c.title}</h1>
+          <p className="shell-page-header__lead">{c.subtitle}</p>
+        </div>
       </header>
       <PostComposer variant="general" onPublish={handlePublish} autoFocus />
     </div>

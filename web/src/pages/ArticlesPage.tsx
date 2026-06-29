@@ -24,13 +24,11 @@ export function ArticlesPage() {
 
   return (
     <div className="articles-page">
-      <header className="feed-column__top page-header-split">
-        <div>
-          <p className="feed-column__subtitle" style={{ marginTop: 0 }}>
-            {a.eyebrow}
-          </p>
-          <h1 className="feed-column__title">{a.title}</h1>
-          <p className="feed-column__subtitle">{a.subtitle}</p>
+      <header className="feed-column__top shell-page-header page-header-split">
+        <div className="shell-page-header__intro">
+          <p className="shell-page-header__eyebrow">{a.eyebrow}</p>
+          <h1 className="shell-page-header__title">{a.title}</h1>
+          <p className="shell-page-header__lead">{a.subtitle}</p>
         </div>
         <div className="page-header-split__actions">
           <Button onClick={() => navigate("/app/articles/new")}>{a.write}</Button>
@@ -54,14 +52,21 @@ export function ArticlesPage() {
               <div className="article-card__body">
                 <h3 className="article-card__title">{item.title}</h3>
                 <p className="article-card__excerpt">{item.excerpt}</p>
-                <p className="article-card__meta">
-                  <span>@{item.handle}</span>
-                  <span>·</span>
-                  <span>{formatTimeAgo(item.ts, locale)}</span>
+                <div className="article-card__meta">
+                  <span className="article-card__author">@{item.handle}</span>
+                  <span className="article-card__sep" aria-hidden="true">
+                    ·
+                  </span>
+                  <time
+                    className="article-card__time"
+                    dateTime={new Date(item.ts).toISOString()}
+                  >
+                    {formatTimeAgo(item.ts, locale)}
+                  </time>
                   {item.txHash && /^[0-9a-f]{64}$/i.test(item.txHash) && (
                     <span className="article-card__chip">{a.onChainChip}</span>
                   )}
-                </p>
+                </div>
               </div>
             </Link>
           ))}

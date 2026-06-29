@@ -49,9 +49,12 @@ export function PostComposer({
     >
       <div className="voice-composer__head">
         <UserAvatar user={user} size="md" verified />
-        <p className="voice-composer__greet">
-          {c.hello} <strong>{user.username}</strong>
-        </p>
+        <div className="voice-composer__who">
+          <p className="voice-composer__greet">
+            {c.hello} <strong>{user.username || user.handle}</strong>
+          </p>
+          <p className="voice-composer__handle">@{user.handle}</p>
+        </div>
       </div>
 
       {variant === "thread" && thread && (

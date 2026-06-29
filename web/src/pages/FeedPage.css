@@ -1,0 +1,106 @@
+/* Feed — intro alineada a shell-page-header, toolbar sticky, estados con aire */
+
+.feed-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--shell-header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.feed-page__intro {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.feed-toolbar .feed-column__tabs {
+  padding: 0 var(--app-gutter);
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+}
+
+.feed-stream {
+  padding-bottom: calc(var(--space-5) + var(--safe-bottom));
+}
+
+.feed-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 12rem;
+  padding: var(--space-7) var(--app-gutter);
+  text-align: center;
+}
+
+.feed-state__message {
+  margin: 0;
+  max-width: 22rem;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.feed-state__message--err {
+  color: var(--color-error);
+}
+
+.feed-state__action {
+  min-height: 2.5rem;
+  padding: 0.5rem 1.15rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.feed-state__action:hover {
+  background: var(--color-accent-deep);
+  border-color: var(--color-accent-deep);
+}
+
+.feed-state--loading .feed-state__message {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.feed-state--loading .feed-state__message::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid var(--color-accent-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: feed-spin 0.7s linear infinite;
+}
+
+@keyframes feed-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-state--loading .feed-state__message::before {
+    animation: none;
+    border-top-color: var(--color-accent-border);
+  }
+}
+
+@media (max-width: 767px) {
+  .feed-page__intro {
+    padding-bottom: var(--space-3);
+  }
+}

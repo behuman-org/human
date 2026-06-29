@@ -1,28 +1,55 @@
+/* Composer — misma superficie neutra que article-card / cause-card */
 .voice-composer {
-  margin: 0.75rem 0.75rem 1rem;
-  padding: 1rem;
-  background: var(--color-bg-tint);
-  border: 1px solid var(--color-accent-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-4) var(--app-gutter);
+  padding: var(--space-4);
+  background: var(--color-bg-deep);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 24px rgba(14, 165, 233, 0.06);
+  box-shadow: 0 1px 2px var(--color-panel-shadow);
 }
 
 .voice-composer__head {
-  display: flex;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
   align-items: center;
-  margin-bottom: 0.75rem;
+}
+
+.voice-composer__who {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
 .voice-composer__greet {
   margin: 0;
   font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.voice-composer__greet strong {
+  font-weight: 700;
   color: var(--color-text);
 }
 
+.voice-composer__handle {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text-dim);
+}
+
 .voice-composer__context {
-  margin: 0 0 0.65rem;
+  margin: 0;
   font-size: 0.85rem;
+  line-height: 1.5;
   color: var(--color-text-muted);
 }
 
@@ -46,13 +73,13 @@
 
 .voice-composer__input {
   width: 100%;
-  min-height: 4.5rem;
-  padding: 0.65rem 0.75rem;
+  min-height: 5rem;
+  padding: var(--space-3) var(--space-4);
   font-family: inherit;
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.55;
   color: var(--color-text);
-  background: var(--color-bg-deep);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   resize: vertical;
@@ -73,7 +100,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
-  margin-top: 0.75rem;
 }
 
 .voice-composer__communities-label {
@@ -109,13 +135,16 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 0.85rem;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
 }
 
 .voice-composer__count {
   font-size: 0.78rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--color-text-muted);
 }
 
@@ -146,7 +175,6 @@
 
 @media (max-width: 480px) {
   .voice-composer {
-    margin: 0.5rem 0.5rem 0.75rem;
-    padding: 0.85rem;
+    margin: var(--space-3) var(--app-gutter) var(--space-4);
   }
 }
