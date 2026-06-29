@@ -12,16 +12,25 @@ import dotenv from "dotenv";
 import express from "express";
 import type { CurationVerdict } from "@behuman/shared";
 import {
+  articleReviewBody,
+  countReports,
   escalateToModeration,
   getModerationQueue,
+  hasReported,
+  recordReport,
   resolveModeration,
   reviewPost,
+  upsertModerationItem,
+  type ReportKind,
 } from "@behuman/curation";
 import { strToField, verifyFundingOpinionProof } from "@behuman/sdk";
 
 const here = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(here, "..", "..", "..", ".env") });
 const STORE = process.env.PLATFORM_STORE ?? resolve(here, "..", ".platform-store.json");
+
+/** Denuncias distintas sobre un mismo contenido → ocultar del feed. */
+const REPORT_ESCALATE_THRESHOLD = Number(process.env.REPORT_ESCALATE_THRESHOLD ?? 3);
 
 // VK del circuito que reusa el "Resuena" (funding_opinion: scope + nullifier por post).
 const RESONATE_VK = resolve(here, "..", "..", "..", "funding", "circuits", "build", "verification_key.json");
@@ -61,6 +70,7 @@ interface ArticleItem {
   content: string; // markdown
   contentHash: string;
   txHash: string; // ancla on-chain (opinion_board)
+  curation: CurationVerdict;
   ts: number;
 }
 interface ArticleOpinion {
@@ -71,6 +81,7 @@ interface ArticleOpinion {
   content: string;
   contentHash: string;
   txHash: string;
+  curation: CurationVerdict;
   ts: number;
 }
 // Respuesta a un tweet (espejo de ArticleOpinion). `parentId` ata la respuesta a su hilo;
@@ -111,18 +122,190 @@ function save(s: Store): void {
 /** Handle público: últimos 5 caracteres del platformId. */
 const handleOf = (platformId: string) => platformId.slice(-5);
 
-/** Curaduría Nivel 1 (solo contenido + seudónimo; nunca address). Compartida por posts y replies.
- * Sin ANTHROPIC_API_KEY (dev/demo) se aprueba (visible); con clave, si el curador falla se escala. */
-async function curate(platformId: string, handle: string, content: string): Promise<CurationVerdict> {
-  if (!process.env.ANTHROPIC_API_KEY) {
+const isPublic = (c?: CurationVerdict) => c?.status !== "escalated";
+
+/** true solo si CURATION_DISABLED=true (dev local sin Groq). */
+function curationSkipped(): boolean {
+  return process.env.CURATION_DISABLED === "true";
+}
+
+/** Curaduría proactiva (Nivel 1) en TODA publicación. Groq vía GROQ_API_KEY. */
+async function curate(
+  platformId: string,
+  handle: string,
+  content: string,
+  opts?: {
+    title?: string;
+    parentContent?: string;
+    contentKind?: "post" | "reply" | "article" | "article_opinion";
+  },
+): Promise<CurationVerdict> {
+  if (curationSkipped()) {
     return { status: "approved", reason: "curaduría deshabilitada (dev)" };
   }
+  if (!process.env.GROQ_API_KEY) {
+    console.warn("[curation] GROQ_API_KEY ausente — escalando por fail-safe");
+    return { status: "escalated", reason: "Agente no configurado; revisión humana." };
+  }
   try {
-    return await reviewPost({ platformId, handle, content });
+    return await reviewPost({
+      platformId,
+      handle,
+      content,
+      title: opts?.title,
+      parentContent: opts?.parentContent,
+      contentKind:
+        opts?.contentKind ??
+        (opts?.parentContent ? "reply" : opts?.title ? "article" : "post"),
+    });
   } catch (err) {
     console.error("[curation] no disponible:", (err as Error).message);
     return { status: "escalated", reason: "Curador no disponible; revisión humana." };
   }
+}
+
+function enqueueIfEscalated(
+  id: string,
+  platformId: string,
+  handle: string,
+  content: string,
+  curation: CurationVerdict,
+  kind: ReportKind = "post",
+): void {
+  if (curation.status !== "escalated") return;
+  escalateToModeration({
+    id,
+    platformId,
+    handle,
+    content: content.slice(0, 560),
+    reason: curation.reason ?? "",
+    kind,
+  });
+}
+
+interface MutableContent {
+  queueId: string;
+  platformId: string;
+  handle: string;
+  content: string;
+  curation: CurationVerdict;
+  kind: ReportKind;
+  applyVerdict: (v: CurationVerdict) => void;
+}
+
+function findMutableContent(s: Store, targetId: string): MutableContent | null {
+  const post = s.posts.find((p) => p.id === targetId);
+  if (post) {
+    return {
+      queueId: post.id,
+      platformId: post.platformId,
+      handle: post.handle,
+      content: post.content,
+      curation: post.curation,
+      kind: "post",
+      applyVerdict: (v) => {
+        post.curation = v;
+      },
+    };
+  }
+  const reply = s.replies.find((r) => r.id === targetId);
+  if (reply) {
+    return {
+      queueId: reply.id,
+      platformId: reply.platformId,
+      handle: reply.handle,
+      content: reply.content,
+      curation: reply.curation,
+      kind: "reply",
+      applyVerdict: (v) => {
+        reply.curation = v;
+      },
+    };
+  }
+  const article = s.articles.find((a) => a.id === targetId);
+  if (article) {
+    return {
+      queueId: article.id,
+      platformId: article.platformId,
+      handle: article.handle,
+      content: `${article.title}\n${articleReviewBody(article.title, article.content).slice(0, 400)}`,
+      curation: article.curation,
+      kind: "article",
+      applyVerdict: (v) => {
+        article.curation = v;
+      },
+    };
+  }
+  const opinion = s.articleOpinions.find((o) => o.id === targetId);
+  if (opinion) {
+    return {
+      queueId: opinion.id,
+      platformId: opinion.platformId,
+      handle: opinion.handle,
+      content: opinion.content,
+      curation: opinion.curation,
+      kind: "article",
+      applyVerdict: (v) => {
+        opinion.curation = v;
+      },
+    };
+  }
+  return null;
+}
+
+/** Aplica denuncia de usuario: cola humana + ajuste de veredicto según umbral. */
+function applyUserReport(
+  s: Store,
+  input: { reporterPlatformId: string; kind: ReportKind; targetId: string; reason: string },
+): { ok: boolean; duplicate?: boolean; reportCount: number } {
+  const recorded = recordReport({
+    reporterPlatformId: input.reporterPlatformId,
+    kind: input.kind,
+    targetId: input.targetId,
+    reason: input.reason,
+  });
+  const reportCount = countReports(input.kind, input.targetId);
+  const queueReason = `Denuncia (${reportCount}): ${input.reason}`;
+
+  if (input.kind === "user") {
+    upsertModerationItem({
+      id: `user-${input.targetId}`,
+      platformId: input.targetId,
+      handle: handleOf(input.targetId),
+      content: "Perfil denunciado por la comunidad",
+      reason: queueReason,
+      source: "report",
+      reportCount,
+      kind: "user",
+    });
+    save(s);
+    return { ok: recorded, duplicate: !recorded, reportCount };
+  }
+
+  const target = findMutableContent(s, input.targetId);
+  if (!target) {
+    return { ok: false, duplicate: !recorded, reportCount };
+  }
+
+  upsertModerationItem({
+    id: target.queueId,
+    platformId: target.platformId,
+    handle: target.handle,
+    content: target.content.slice(0, 560),
+    reason: queueReason,
+    source: "report",
+    reportCount,
+    kind: target.kind,
+  });
+
+  if (target.curation.status !== "escalated") {
+    const nextStatus: CurationVerdict["status"] =
+      reportCount >= REPORT_ESCALATE_THRESHOLD ? "escalated" : "flagged";
+    target.applyVerdict({ status: nextStatus, reason: queueReason });
+  }
+
+  save(s);
+  return { ok: recorded, duplicate: !recorded, reportCount };
 }
 
 const app = express();
@@ -168,8 +351,8 @@ app.post("/content", async (req, res) => {
   const s = load();
   const profile = s.profiles[platformId] ?? { username: "", handle: handleOf(platformId) };
 
-  // Nivel 1 — curaduría (solo contenido + seudónimo; nunca address).
-  const curation = await curate(platformId, profile.handle, content);
+  // Nivel 1 — curaduría proactiva antes de persistir (sin depender de denuncias).
+  const curation = await curate(platformId, profile.handle, content, { contentKind: "post" });
 
   const item: PostItem = {
     id: randomUUID(),
@@ -183,16 +366,7 @@ app.post("/content", async (req, res) => {
     ts: Date.now(),
   };
 
-  // Nivel 2 — escalado a moderación humana (solo contenido + seudónimo + motivo).
-  if (curation.status === "escalated") {
-    escalateToModeration({
-      id: item.id,
-      platformId,
-      handle: item.handle,
-      content,
-      reason: curation.reason ?? "",
-    });
-  }
+  enqueueIfEscalated(item.id, platformId, item.handle, content, curation, "post");
 
   s.posts.push(item);
   save(s);
@@ -202,7 +376,7 @@ app.post("/content", async (req, res) => {
 
 // Cuenta respuestas visibles (no escaladas) de un parentId.
 const replyCountOf = (s: Store, parentId: string) =>
-  s.replies.filter((r) => r.parentId === parentId && r.curation?.status !== "escalated").length;
+  s.replies.filter((r) => r.parentId === parentId && isPublic(r.curation)).length;
 
 // Cuenta pública de Resuena (nullifiers únicos) de un post.
 const resonateCountOf = (s: Store, postId: string) => (s.resonates[postId] ?? []).length;
@@ -214,7 +388,7 @@ app.get("/feed", (_req, res) => {
   res.json(
     [...s.posts]
       .reverse()
-      .filter((p) => p.curation?.status !== "escalated")
+      .filter((p) => isPublic(p.curation))
       .map((p) => ({ ...p, replyCount: replyCountOf(s, p.id), resonateCount: resonateCountOf(s, p.id) })),
   );
 });
@@ -225,10 +399,12 @@ app.get("/posts/:id", (req, res) => {
   const s = load();
   const post = s.posts.find((p) => p.id === req.params.id);
   if (post) {
+    if (!isPublic(post.curation)) return res.status(404).json({ error: "not_found" });
     return res.json({ ...post, replyCount: replyCountOf(s, post.id), resonateCount: resonateCountOf(s, post.id) });
   }
   const reply = s.replies.find((r) => r.id === req.params.id);
   if (reply) {
+    if (!isPublic(reply.curation)) return res.status(404).json({ error: "not_found" });
     return res.json({
       ...reply,
       communityId: undefined,
@@ -254,7 +430,10 @@ app.post("/posts/:id/replies", async (req, res) => {
   if (!platformId || !content || !contentHash) return res.status(400).json({ error: "missing_fields" });
 
   const profile = s.profiles[platformId] ?? { username: "", handle: handleOf(platformId) };
-  const curation = await curate(platformId, profile.handle, content);
+  const curation = await curate(platformId, profile.handle, content, {
+    parentContent: parent.content,
+    contentKind: "reply",
+  });
   const reply: Reply = {
     id: randomUUID(),
     parentId: req.params.id,
@@ -267,9 +446,7 @@ app.post("/posts/:id/replies", async (req, res) => {
     curation,
     ts: Date.now(),
   };
-  if (curation.status === "escalated") {
-    escalateToModeration({ id: reply.id, platformId, handle: reply.handle, content, reason: curation.reason ?? "" });
-  }
+  enqueueIfEscalated(reply.id, platformId, reply.handle, content, curation, "reply");
   s.replies.push(reply);
   save(s);
   console.log(`[reply] id=${reply.id} parent=${reply.parentId} curation=${curation.status}`);
@@ -281,7 +458,7 @@ app.get("/posts/:id/replies", (req, res) => {
   const s = load();
   res.json(
     s.replies
-      .filter((r) => r.parentId === req.params.id && r.curation?.status !== "escalated")
+      .filter((r) => r.parentId === req.params.id && isPublic(r.curation))
       .sort((a, b) => a.ts - b.ts),
   );
 });
@@ -343,7 +520,7 @@ app.post("/posts/:id/unresonate", async (req, res) => {
 // ─── Artículos (long-form) ─────────────────────────────────────────────────────
 // Misma transacción on-chain que un tweet (opinion_board), pero el contentHash cubre todo
 // el artículo (título+banner+cuerpo). Off-chain guardamos el contenido; on-chain solo el ancla.
-app.post("/articles", (req, res) => {
+app.post("/articles", async (req, res) => {
   const platformId = String(req.body?.platformId ?? "");
   const title = String(req.body?.title ?? "").trim().slice(0, 200);
   const banner = String(req.body?.banner ?? "");
@@ -355,6 +532,11 @@ app.post("/articles", (req, res) => {
   }
   const s = load();
   const profile = s.profiles[platformId] ?? { username: "", handle: handleOf(platformId) };
+  const reviewText = articleReviewBody(title, content);
+  const curation = await curate(platformId, profile.handle, reviewText, {
+    title,
+    contentKind: "article",
+  });
   const item: ArticleItem = {
     id: randomUUID(),
     platformId,
@@ -365,11 +547,13 @@ app.post("/articles", (req, res) => {
     content,
     contentHash,
     txHash,
+    curation,
     ts: Date.now(),
   };
+  enqueueIfEscalated(item.id, platformId, item.handle, `${title}\n${reviewText.slice(0, 400)}`, curation, "article");
   s.articles.push(item);
   save(s);
-  console.log(`[article] id=${item.id} title="${title.slice(0, 40)}"`);
+  console.log(`[article] id=${item.id} curation=${curation.status} title="${title.slice(0, 40)}"`);
   res.json(item);
 });
 
@@ -377,7 +561,10 @@ app.post("/articles", (req, res) => {
 app.get("/articles", (_req, res) => {
   const s = load();
   res.json(
-    [...s.articles].reverse().map((a) => ({
+    [...s.articles]
+      .reverse()
+      .filter((a) => isPublic(a.curation))
+      .map((a) => ({
       id: a.id,
       platformId: a.platformId,
       handle: a.handle,
@@ -393,19 +580,25 @@ app.get("/articles", (_req, res) => {
 
 app.get("/articles/:id", (req, res) => {
   const a = load().articles.find((x) => x.id === req.params.id);
-  return a ? res.json(a) : res.status(404).json({ error: "not_found" });
+  if (!a || !isPublic(a.curation)) return res.status(404).json({ error: "not_found" });
+  return res.json(a);
 });
 
-app.post("/articles/:id/opinions", (req, res) => {
+app.post("/articles/:id/opinions", async (req, res) => {
   const s = load();
   const article = s.articles.find((x) => x.id === req.params.id);
-  if (!article) return res.status(404).json({ error: "not_found" });
+  if (!article || !isPublic(article.curation)) return res.status(404).json({ error: "not_found" });
   const platformId = String(req.body?.platformId ?? "");
   const content = String(req.body?.content ?? "").trim().slice(0, 560);
   const contentHash = String(req.body?.contentHash ?? "");
   const txHash = String(req.body?.txHash ?? "");
   if (!platformId || !content || !contentHash) return res.status(400).json({ error: "missing_fields" });
   const profile = s.profiles[platformId] ?? { username: "", handle: handleOf(platformId) };
+  const parentContext = `${article.title}\n${articleReviewBody(article.title, article.content).slice(0, 800)}`;
+  const curation = await curate(platformId, profile.handle, content, {
+    parentContent: parentContext,
+    contentKind: "reply",
+  });
   const op: ArticleOpinion = {
     id: randomUUID(),
     articleId: article.id,
@@ -414,16 +607,61 @@ app.post("/articles/:id/opinions", (req, res) => {
     content,
     contentHash,
     txHash,
+    curation,
     ts: Date.now(),
   };
+  enqueueIfEscalated(op.id, platformId, op.handle, content, curation, "article");
   s.articleOpinions.push(op);
   save(s);
+  console.log(`[article-opinion] id=${op.id} curation=${curation.status}`);
   res.json(op);
 });
 
 app.get("/articles/:id/opinions", (req, res) => {
   const s = load();
-  res.json([...s.articleOpinions].filter((o) => o.articleId === req.params.id).reverse());
+  res.json([...s.articleOpinions].filter((o) => o.articleId === req.params.id && isPublic(o.curation)).reverse());
+});
+
+// Denuncias de usuarios → cola de moderación + veredicto ajustado por umbral.
+app.post("/reports", (req, res) => {
+  const reporterPlatformId = String(req.body?.platformId ?? "");
+  const kind = String(req.body?.kind ?? "post") as ReportKind;
+  const targetId = String(req.body?.targetId ?? "");
+  const reason = String(req.body?.reason ?? "Contenido inapropiado").trim().slice(0, 280);
+  if (!reporterPlatformId || !targetId) {
+    return res.status(400).json({ error: "missing_fields" });
+  }
+  if (!["post", "reply", "article", "user"].includes(kind)) {
+    return res.status(400).json({ error: "invalid_kind" });
+  }
+  const s = load();
+  if (kind !== "user" && !findMutableContent(s, targetId)) {
+    return res.status(404).json({ error: "target_not_found" });
+  }
+  if (kind === "user" && !s.profiles[targetId] && !s.posts.some((p) => p.platformId === targetId)) {
+    // perfil puede existir solo por posts
+    const hasActivity =
+      s.posts.some((p) => p.platformId === targetId) ||
+      s.replies.some((r) => r.platformId === targetId) ||
+      s.articles.some((a) => a.platformId === targetId);
+    if (!hasActivity) return res.status(404).json({ error: "target_not_found" });
+  }
+  const result = applyUserReport(s, { reporterPlatformId, kind, targetId, reason });
+  if (result.duplicate) {
+    return res.status(409).json({ error: "already_reported", reportCount: result.reportCount });
+  }
+  console.log(`[report] kind=${kind} target=${targetId} count=${result.reportCount}`);
+  res.json({ ok: true, reportCount: result.reportCount });
+});
+
+app.get("/reports/check", (req, res) => {
+  const reporterPlatformId = String(req.query.platformId ?? "");
+  const kind = String(req.query.kind ?? "post") as ReportKind;
+  const targetId = String(req.query.targetId ?? "");
+  if (!reporterPlatformId || !targetId) {
+    return res.status(400).json({ error: "missing_fields" });
+  }
+  res.json({ reported: hasReported(reporterPlatformId, kind, targetId) });
 });
 
 // Vista mínima de moderación: cola de casos escalados (contenido + seudónimo, nada más).
@@ -440,11 +678,19 @@ app.post("/moderation/resolve", (req, res) => {
   }
   const removed = resolveModeration(id);
   const s = load();
+  const verdict: CurationVerdict = {
+    status: status as CurationVerdict["status"],
+    reason: "Resuelto por moderación humana.",
+  };
   const post = s.posts.find((p) => p.id === id);
-  if (post) {
-    post.curation = { status: status as CurationVerdict["status"], reason: "Resuelto por moderación humana." };
-    save(s);
-  }
+  const reply = s.replies.find((r) => r.id === id);
+  const article = s.articles.find((a) => a.id === id);
+  const opinion = s.articleOpinions.find((o) => o.id === id);
+  if (post) post.curation = verdict;
+  else if (reply) reply.curation = verdict;
+  else if (article) article.curation = verdict;
+  else if (opinion) opinion.curation = verdict;
+  if (post || reply || article || opinion) save(s);
   res.json({ ok: removed });
 });
 

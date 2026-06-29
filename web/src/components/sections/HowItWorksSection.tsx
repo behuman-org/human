@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { BentoSection, MagicBentoCard } from "../backgrounds/MagicBento/MagicBento";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import "./HowItWorksSection.css";
@@ -15,7 +15,7 @@ export function HowItWorksSection() {
           <h2 className="section-title">{kycFlow.title}</h2>
           <p className="section-lead">{kycFlow.lead}</p>
         </ScrollReveal>
-        <BentoSection className="how-it-works__steps" as="ol">
+        <BentoSection className="how-it-works__steps landing-card-grid" as="ol">
           {kycFlow.steps.map((step, index) => (
             <ScrollReveal key={step.num} delay={index * 90}>
               <MagicBentoCard as="li" className="step-card">

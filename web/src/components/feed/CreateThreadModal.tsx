@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createCommunity } from "../../feed/feedApi";
+import { useI18n } from "../../i18n/useI18n";
 import "./EditProfileModal.css";
 import "./CreateThreadModal.css";
 
@@ -10,6 +11,9 @@ interface CreateThreadModalProps {
 }
 
 export function CreateThreadModal({ open, onClose, onCreated }: CreateThreadModalProps) {
+  const { t } = useI18n();
+  const c = t.social.createThread;
+  const common = t.social.common;
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
@@ -27,7 +31,7 @@ export function CreateThreadModal({ open, onClose, onCreated }: CreateThreadModa
       onCreated(community.slug);
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "No se pudo crear el hilo.");
+      setError(e instanceof Error ? e.message : c.error);
     } finally {
       setBusy(false);
     }
@@ -35,33 +39,33 @@ export function CreateThreadModal({ open, onClose, onCreated }: CreateThreadModa
 
   return (
     <div className="profile-modal" role="dialog" aria-modal="true" aria-labelledby="create-thread-title">
-      <button type="button" className="profile-modal__backdrop" aria-label="Cerrar" onClick={onClose} />
+      <button type="button" className="profile-modal__backdrop" aria-label={common.close} onClick={onClose} />
       <div className="profile-modal__panel">
         <header className="profile-modal__head">
           <button type="button" className="profile-modal__close" onClick={onClose}>
             ✕
           </button>
-          <h2 id="create-thread-title">Crear hilo</h2>
+          <h2 id="create-thread-title">{c.title}</h2>
           <button
             type="button"
             className="profile-modal__save"
             disabled={busy}
             onClick={() => void submit()}
           >
-            Crear
+            {c.create}
           </button>
         </header>
 
         <div className="profile-modal__body create-thread-modal__body">
           <label className="profile-modal__field">
-            <span>Nombre</span>
+            <span>{c.name}</span>
             <div className="create-thread-modal__name-row">
               <span className="create-thread-modal__prefix">r/</span>
               <input
                 type="text"
                 value={name}
                 maxLength={21}
-                placeholder="nombre_del_hilo"
+                placeholder={c.namePlaceholder}
                 autoFocus
                 onChange={(e) => setName(e.target.value)}
               />
@@ -69,12 +73,12 @@ export function CreateThreadModal({ open, onClose, onCreated }: CreateThreadModa
           </label>
 
           <label className="profile-modal__field">
-            <span>Descripción</span>
+            <span>{c.description}</span>
             <textarea
               value={description}
               rows={3}
               maxLength={200}
-              placeholder="De qué se habla en este espacio"
+              placeholder={c.descriptionPlaceholder}
               onChange={(e) => setDescription(e.target.value)}
             />
           </label>

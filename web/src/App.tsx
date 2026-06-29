@@ -15,6 +15,7 @@ import { OnboardingPage } from "./pages/OnboardingPage";
 import { PostThreadPage } from "./pages/PostThreadPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { ModerationPage } from "./pages/ModerationPage";
 import { SocialShell } from "./pages/SocialShell";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path="messages/:platformId" element={<MessagesPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="moderation" element={<ModerationPage />} />
       </Route>
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/login" element={<AuthPage defaultTab="login" />} />

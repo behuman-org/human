@@ -45,17 +45,31 @@
 
 .tech-marquee__pill {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.15rem;
+  align-items: center;
+  gap: 0.75rem;
   padding: 0.65rem 1rem;
-  min-width: 9.5rem;
+  min-width: 11.5rem;
   border-radius: var(--radius-md);
   background: var(--color-bg-deep);
   border: 1px solid var(--color-border);
   box-shadow:
     0 2px 12px rgba(10, 10, 10, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.tech-marquee__pill-logo {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+
+.tech-marquee__pill-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-width: 0;
 }
 
 .tech-marquee__pill-name {

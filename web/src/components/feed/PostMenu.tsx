@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { reportPost, wasReported } from "../../feed/feedApi";
 import { PlatformApiError } from "../../feed/platformApi";
+import { useI18n } from "../../i18n/useI18n";
 import { ActionMenu } from "./ActionMenu";
 
 interface PostMenuProps {
@@ -8,6 +9,8 @@ interface PostMenuProps {
 }
 
 export function PostMenu({ postId }: PostMenuProps) {
+  const { t } = useI18n();
+  const m = t.social.postMenu;
   const [reported, setReported] = useState(false);
   const [toast, setToast] = useState("");
 
@@ -15,17 +18,15 @@ export function PostMenu({ postId }: PostMenuProps) {
     void wasReported("post", postId).then(setReported);
   }, [postId]);
 
-  async function denunciar() {
+  async function report() {
     if (reported) return;
     try {
-      await reportPost(postId, "Contenido inapropiado o spam");
+      await reportPost(postId, m.reportReason);
       setReported(true);
-      setToast("Denuncia enviada.");
+      setToast(m.reportSent);
     } catch (err) {
       setToast(
-        err instanceof PlatformApiError && err.status === 404
-          ? "Las denuncias estarán disponibles cuando el backend exponga el endpoint."
-          : "No se pudo enviar la denuncia.",
+        err instanceof PlatformApiError && err.status === 404 ? m.reportUnavailable : m.reportFailed,
       );
     }
     window.setTimeout(() => setToast(""), 2800);
@@ -34,14 +35,14 @@ export function PostMenu({ postId }: PostMenuProps) {
   return (
     <>
       <ActionMenu
-        label="Opciones de la publicación"
+        label={m.menuLabel}
         items={[
           {
             id: "report",
-            label: reported ? "Denunciado" : "Denunciar",
+            label: reported ? m.reported : m.report,
             destructive: true,
             disabled: reported,
-            onSelect: () => void denunciar(),
+            onSelect: () => void report(),
           },
         ]}
       />

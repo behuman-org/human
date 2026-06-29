@@ -1,0 +1,124 @@
+.moderation-page__privacy {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  background: var(--color-bg-deep);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.moderation-page__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.moderation-page__card {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.moderation-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.moderation-page__handle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-accent-deep);
+}
+
+.moderation-page__badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-muted);
+  background: var(--color-bg-deep);
+  border: 1px solid var(--color-border);
+}
+
+.moderation-page__badge--count {
+  color: var(--color-accent-deep);
+  border-color: var(--color-accent-border);
+  background: var(--color-accent-subtle);
+}
+
+.moderation-page__time {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.moderation-page__reason {
+  margin: 0 0 0.65rem;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--color-text);
+  background: var(--color-row-unread);
+  border-radius: var(--radius-sm);
+}
+
+.moderation-page__content {
+  margin: 0 0 0.85rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.moderation-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.moderation-page__actions .btn {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.moderation-page__refresh {
+  flex-shrink: 0;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-accent-deep);
+  background: transparent;
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.moderation-page__refresh:hover {
+  background: var(--color-accent-subtle);
+}
+
+.moderation-page__error {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.88rem;
+  color: var(--color-danger, #c5221f);
+  background: rgba(197, 34, 31, 0.08);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 480px) {
+  .moderation-page__card {
+    padding: 0.85rem;
+  }
+}

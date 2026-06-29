@@ -40,7 +40,9 @@
 }
 
 .profile-actions__follow:hover:not(:disabled) {
-  background: var(--color-neutral-800);
+  background: var(--color-accent-deep);
+  border-color: var(--color-accent-deep);
+  color: var(--color-on-accent);
 }
 
 .profile-actions__follow.is-following {

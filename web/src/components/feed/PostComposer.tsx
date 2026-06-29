@@ -2,13 +2,13 @@ import { useState, type CSSProperties } from "react";
 import type { Community } from "../../feed/types";
 import { communityLabel } from "../../feed/feedApi";
 import { useUser } from "../../feed/UserContext";
+import { useI18n } from "../../i18n/useI18n";
 import { UserAvatar } from "./UserAvatar";
 import "./PostComposer.css";
 
 const MAX = 560;
 
 interface PostComposerProps {
-  /** general = feed sin hilo; thread = publicar dentro de un hilo fijo */
   variant: "general" | "thread";
   thread?: Community;
   onPublish: (content: string, communityId: string) => Promise<void>;
@@ -22,6 +22,8 @@ export function PostComposer({
   autoFocus = false,
 }: PostComposerProps) {
   const { user } = useUser();
+  const { t } = useI18n();
+  const c = t.social.postComposer;
   const [content, setContent] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -43,18 +45,21 @@ export function PostComposer({
   return (
     <section
       className="voice-composer"
-      aria-label={variant === "thread" ? "Publicar en el hilo" : "Publicar opinión"}
+      aria-label={variant === "thread" ? c.ariaThread : c.ariaGeneral}
     >
       <div className="voice-composer__head">
         <UserAvatar user={user} size="md" verified />
-        <p className="voice-composer__greet">
-          Hola, <strong>{user.username}</strong>
-        </p>
+        <div className="voice-composer__who">
+          <p className="voice-composer__greet">
+            {c.hello} <strong>{user.username || user.handle}</strong>
+          </p>
+          <p className="voice-composer__handle">@{user.handle}</p>
+        </div>
       </div>
 
       {variant === "thread" && thread && (
         <p className="voice-composer__context">
-          Publicando en{" "}
+          {c.postingIn}{" "}
           <span className="voice-composer__context-chip" style={{ "--chip-accent": thread.accent } as CSSProperties}>
             {communityLabel(thread)}
           </span>
@@ -63,12 +68,8 @@ export function PostComposer({
 
       <textarea
         className="voice-composer__input"
-        aria-label="Escribí tu opinión"
-        placeholder={
-          variant === "thread"
-            ? "¿Qué aportás a esta conversación?"
-            : "¿Qué opinás? Compartí tu opinión…"
-        }
+        aria-label={c.inputAria}
+        placeholder={variant === "thread" ? c.placeholderThread : c.placeholderGeneral}
         rows={3}
         autoFocus={autoFocus}
         value={content}
@@ -83,14 +84,10 @@ export function PostComposer({
           type="button"
           className="voice-composer__submit"
           disabled={!canPost}
-          style={
-            thread
-              ? ({ "--btn-accent": thread.accent } as CSSProperties)
-              : undefined
-          }
+          style={thread ? ({ "--btn-accent": thread.accent } as CSSProperties) : undefined}
           onClick={() => void submit()}
         >
-          {busy ? "Enviando…" : "Publicar opinión"}
+          {busy ? c.sending : c.publish}
         </button>
       </div>
     </section>

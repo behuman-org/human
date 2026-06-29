@@ -1,26 +1,32 @@
-# platform/curation · Agentes validadores + moderación
+# platform/curation · Agente moderador (Groq) + cola humana
 
-Curaduría en **dos niveles** que mantiene la calidad/veracidad del contenido sin censurar.
+Moderación **proactiva**: cada publicación pasa por el agente **antes** de aparecer en el feed.
+No depende de denuncias de usuarios.
 
-> 📐 Ver en la vault: `Curaduría y Agentes Validadores`.
+**Proveedor:** [Groq](https://groq.com) (`groq-sdk`). Variables: `GROQ_API_KEY`, `CURATION_MODEL`.
 
-## Niveles
+**Dev sin Groq:** `CURATION_DISABLED=true` auto-aprueba (solo local).
 
-1. **Agente validador (IA, automático):** evalúa veracidad, fuentes, coherencia, toxicidad,
-   plagio. Usa la API de Claude.
-2. **Moderación humana (derivación):** los casos ambiguos o sensibles se escalan a personas.
+## Qué detecta el agente
 
-> **Principio rector:** no perder el criterio de la persona — filtrar ruido y abuso, no
-> acallar opiniones legítimas.
+1. Pierde el hilo (respuestas off-topic)
+2. PII / datos sensibles de terceros
+3. Ilegal, +18 explícito, gore → `escalated` (oculto hasta revisión humana)
 
-## Pendiente de definir (de la vault)
+## Cobertura
 
-- Qué evalúa exactamente el agente y dónde está el límite con la moderación humana.
-- Cómo se eligen/gobiernan los moderadores (¿personas verificadas? ¿reputación?).
-- Si la curaduría es on-chain, off-chain o híbrida (los agentes corren off-chain).
-- Si hay apelación de una decisión.
+| Ruta | Curaduría |
+|------|-----------|
+| `POST /content` | ✅ |
+| `POST /posts/:id/replies` | ✅ (+ contexto padre) |
+| `POST /articles` | ✅ |
+| `POST /articles/:id/opinions` | ✅ |
+
+`escalated` → no visible en feed/listados; entra a cola humana (`/app/moderation`).
+
+Denuncias: `POST /reports` — ver [docs/moderation-agent.md](../../docs/moderation-agent.md).
 
 ```bash
-npm install
-npm run dev
+GROQ_API_KEY=gsk_... npm run serve -w @behuman/api
+npm test -w @behuman/curation
 ```

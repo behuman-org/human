@@ -1,0 +1,37 @@
+/* Grillas de cards informativas en la landing — misma altura por fila. */
+.landing-card-grid {
+  align-items: stretch;
+}
+
+.landing-card-grid > .scroll-reveal {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+}
+
+.landing-card-grid .magic-bento-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.layer-card,
+.platform-card,
+.curation-card,
+.step-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.layer-card__body,
+.platform-card__body,
+.curation-card__body,
+.step-card__body {
+  flex: 1;
+}
+
+.layer-card__list {
+  margin-top: auto;
+}

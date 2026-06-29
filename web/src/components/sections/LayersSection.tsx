@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { BentoSection, MagicBentoCard } from "../backgrounds/MagicBento/MagicBento";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import "./LayersSection.css";
@@ -15,7 +15,7 @@ export function LayersSection() {
           <h2 className="section-title">{layers.title}</h2>
           <p className="section-lead">{layers.lead}</p>
         </ScrollReveal>
-        <BentoSection className="layers__grid">
+        <BentoSection className="layers__grid landing-card-grid">
           {layers.items.map((layer, index) => (
             <ScrollReveal key={layer.id} delay={index * 100}>
               <MagicBentoCard as="article" className="layer-card" id={layer.id}>

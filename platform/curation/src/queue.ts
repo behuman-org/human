@@ -3,9 +3,16 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import type { ReportKind } from "./reports.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const STORE = process.env.MODERATION_QUEUE ?? resolve(here, "..", ".moderation-queue.json");
+const defaultStore = resolve(here, "..", ".moderation-queue.json");
+
+function storePath(): string {
+  return process.env.MODERATION_QUEUE ?? defaultStore;
+}
+
+export type ModerationSource = "agent" | "report";
 
 export interface ModerationItem {
   id: string;
@@ -14,26 +21,61 @@ export interface ModerationItem {
   content: string;
   reason: string;
   ts: number;
+  /** Origen del caso en cola. */
+  source?: ModerationSource | "both";
+  /** Denuncias de usuarios acumuladas (si aplica). */
+  reportCount?: number;
+  kind?: ReportKind;
 }
 
 function load(): ModerationItem[] {
-  if (!existsSync(STORE)) return [];
-  return JSON.parse(readFileSync(STORE, "utf8")) as ModerationItem[];
-}
-function save(items: ModerationItem[]): void {
-  writeFileSync(STORE, JSON.stringify(items, null, 2));
+  const path = storePath();
+  if (!existsSync(path)) return [];
+  return JSON.parse(readFileSync(path, "utf8")) as ModerationItem[];
 }
 
-/** Encola un caso para moderadores humanos (idempotente por id). */
-export function escalateToModeration(item: Omit<ModerationItem, "ts">): void {
+function save(items: ModerationItem[]): void {
+  writeFileSync(storePath(), JSON.stringify(items, null, 2));
+}
+
+function mergeSource(
+  prev?: ModerationSource | "both",
+  next?: ModerationSource,
+): ModerationSource | "both" | undefined {
+  if (!next) return prev;
+  if (!prev) return next;
+  if (prev === next) return prev;
+  return "both";
+}
+
+/** Inserta o actualiza un caso en cola (agente, denuncia o ambos). */
+export function upsertModerationItem(item: Omit<ModerationItem, "ts"> & { ts?: number }): void {
   const q = load();
-  if (q.some((i) => i.id === item.id)) return;
-  q.push({ ...item, ts: Date.now() });
+  const idx = q.findIndex((i) => i.id === item.id);
+  const ts = item.ts ?? Date.now();
+  if (idx === -1) {
+    q.push({ ...item, ts });
+  } else {
+    const prev = q[idx];
+    q[idx] = {
+      ...prev,
+      ...item,
+      source: mergeSource(prev.source, item.source),
+      reportCount: item.reportCount ?? prev.reportCount,
+      reason: item.reason || prev.reason,
+      ts: Math.max(prev.ts, ts),
+    };
+  }
   save(q);
 }
 
+/** Encola escalado del agente (compat). */
+export function escalateToModeration(item: Omit<ModerationItem, "ts" | "source">): void {
+  upsertModerationItem({ ...item, source: "agent" });
+}
+
 export function getModerationQueue(): ModerationItem[] {
-  return load();
+  return load().sort((a, b) => b.ts - a.ts);
 }
 
 /** Resuelve (saca de la cola) un caso por id. Devuelve true si existía. */

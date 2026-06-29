@@ -3,6 +3,7 @@
 // Al terminar, "Entrar a la app" entra al feed con la identidad ya derivada.
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { brand } from "../content/brand";
+import { clearLoggedOut } from "../feed/session";
 import { KycFlow } from "../kyc/KycFlow";
 import "../styles/tokens.css";
 import "../styles/global.css";
@@ -27,7 +28,13 @@ export function OnboardingPage() {
             anónima</strong>: el resto pasa solo en tu dispositivo.
           </p>
         )}
-        <KycFlow mode={mode} onDone={() => navigate("/app")} />
+        <KycFlow
+          mode={mode}
+          onDone={() => {
+            clearLoggedOut();
+            navigate("/app");
+          }}
+        />
       </div>
     </main>
   );

@@ -11,7 +11,7 @@ import {
   unresonatePost,
 } from "../../feed/feedApi";
 import { isResonatedLocally } from "../../identity/resonate";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { CommunityChip } from "./CommunityChip";
 import { IconContrato, IconResponder, IconResuena, IconVoto } from "./FeedIcons";
 import { PostMenu } from "./PostMenu";
@@ -24,8 +24,25 @@ interface PostCardProps {
   showVotes?: boolean;
 }
 
+function PostBodyContent({ content }: { content: string }) {
+  const blocks = content.split(/\n{2,}/).filter((block) => block.trim().length > 0);
+  if (blocks.length <= 1) {
+    return <p className="voice-card__body">{content}</p>;
+  }
+  return (
+    <div className="voice-card__body-stack">
+      {blocks.map((block, index) => (
+        <p key={index} className="voice-card__body-para">
+          {block.trimEnd()}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export function PostCard({ post, showVotes = false }: PostCardProps) {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
+  const p = t.social.postCard;
   const navigate = useNavigate();
   const [score, setScore] = useState(post.score);
   const [resonateCount, setResonateCount] = useState(post.resonateCount);
@@ -56,8 +73,6 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
     setScore((s) => s + (dir === "up" ? 1 : -1));
   }
 
-  // Resuena: reacción ANÓNIMA (prueba ZK con nullifier por post). El server cuenta nullifiers
-  // únicos → cuenta pública sin saber quién. Genera una prueba en cada toggle (acción deliberada).
   async function toggleResonate() {
     if (resonating) return;
     setResonating(true);
@@ -66,7 +81,6 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
       setDidResonate((was) => !was);
       setResonateCount(count);
     } catch (e) {
-      // Si todavía no se verificó como humano, lo mandamos al onboarding.
       if ((e as Error).message === "necesitas_verificarte") navigate("/onboarding");
     } finally {
       setResonating(false);
@@ -84,11 +98,11 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
       style={{ "--voice-accent": accent } as CSSProperties}
     >
       {showVotes && (
-        <div className="voice-card__votes" aria-label="Votación comunitaria">
+        <div className="voice-card__votes" aria-label={p.communityVote}>
           <button
             type="button"
             className={`voice-card__vote ${vote === "up" ? "is-on" : ""}`}
-            aria-label="Subir"
+            aria-label={p.voteUp}
             onClick={() => handleVote("up")}
           >
             <IconVoto up />
@@ -97,7 +111,7 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
           <button
             type="button"
             className={`voice-card__vote ${vote === "down" ? "is-on" : ""}`}
-            aria-label="Bajar"
+            aria-label={p.voteDown}
             onClick={() => handleVote("down")}
           >
             <IconVoto up={false} />
@@ -107,31 +121,42 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
 
       <div className="voice-card__panel">
         <header className="voice-card__head">
-          <Link to={authorPath} className="voice-card__avatar-link" aria-label={`Ver perfil de ${name}`}>
+          <Link
+            to={authorPath}
+            className="voice-card__avatar-link"
+            aria-label={p.viewProfile.replace("{name}", name)}
+          >
             <UserAvatar user={avatarUser} size="sm" verified />
           </Link>
-          <div className="voice-card__who">
-            <Link to={authorPath} className="voice-card__name">
-              {name}
-            </Link>
-            <span className="voice-card__handle">@{post.handle}</span>
-            {community && <CommunityChip community={community} size="md" />}
+          <div className="voice-card__meta">
+            <div className="voice-card__title-row">
+              <Link to={authorPath} className="voice-card__name">
+                {name}
+              </Link>
+              <time dateTime={new Date(post.ts).toISOString()} className="voice-card__time">
+                {formatTimeAgo(post.ts, locale)}
+              </time>
+            </div>
+            <div className="voice-card__submeta">
+              <span className="voice-card__handle">@{post.handle}</span>
+              {community && (
+                <>
+                  <span className="voice-card__sep" aria-hidden="true">
+                    ·
+                  </span>
+                  <CommunityChip community={community} size="sm" />
+                </>
+              )}
+            </div>
           </div>
-          <div className="voice-card__head-end">
-            <time dateTime={new Date(post.ts).toISOString()} className="voice-card__time">
-              {formatTimeAgo(post.ts, locale)}
-            </time>
-            <PostMenu postId={post.id} />
-          </div>
+          <PostMenu postId={post.id} />
         </header>
 
         <Link to={`/app/post/${post.id}`} className="voice-card__body-link">
-          <p className="voice-card__body">{post.content}</p>
+          <PostBodyContent content={post.content} />
         </Link>
 
-        {post.curationStatus === "flagged" && (
-          <p className="voice-card__mod">En revisión por moderación</p>
-        )}
+        {post.curationStatus === "flagged" && <p className="voice-card__mod">{p.moderationReview}</p>}
 
         <footer className="voice-card__actions">
           <button
@@ -140,14 +165,22 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
             aria-pressed={didResonate}
             onClick={toggleResonate}
             disabled={resonating}
-            title={didResonate ? "Quitar tu Resuena (anónimo)" : "Resuena de forma anónima"}
+            title={didResonate ? p.resonateRemove : p.resonateAnon}
           >
             <IconResuena />
-            <span>{resonating ? "…" : `Resuena${resonateCount > 0 ? ` · ${resonateCount}` : ""}`}</span>
+            <span className="voice-card__action-text">
+              {resonating ? "…" : p.resonate}
+            </span>
+            {!resonating && resonateCount > 0 && (
+              <span className="voice-card__action-count">{resonateCount}</span>
+            )}
           </button>
-          <Link to={`/app/post/${post.id}`} className="voice-card__action" aria-label="Responder">
+          <Link to={`/app/post/${post.id}`} className="voice-card__action" aria-label={p.reply}>
             <IconResponder />
-            <span>Responder{post.replyCount > 0 ? ` · ${post.replyCount}` : ""}</span>
+            <span className="voice-card__action-text">{p.reply}</span>
+            {post.replyCount > 0 && (
+              <span className="voice-card__action-count">{post.replyCount}</span>
+            )}
           </Link>
           {post.txHash && /^[0-9a-f]{64}$/i.test(post.txHash) ? (
             <a
@@ -156,20 +189,20 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
               target="_blank"
               rel="noreferrer"
               style={{ textDecoration: "none" }}
-              title="Verificar esta opinión on-chain (Stellar Expert)"
+              title={p.verifyOnChain}
             >
               <IconContrato />
-              <span className="sr-only">Ver on-chain</span>
+              <span className="sr-only">{p.viewOnChain}</span>
             </a>
           ) : (
             <button
               type="button"
               className="voice-card__action voice-card__action--icon"
               disabled
-              title="Anclándose on-chain…"
+              title={p.anchoring}
             >
               <IconContrato />
-              <span className="sr-only">On-chain</span>
+              <span className="sr-only">{t.social.common.onChainPending}</span>
             </button>
           )}
         </footer>

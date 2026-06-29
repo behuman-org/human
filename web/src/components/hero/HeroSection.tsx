@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { ScrollReveal } from "../ui/ScrollReveal";

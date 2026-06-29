@@ -70,6 +70,18 @@ export interface ApiDirectMessage {
   ts: number;
 }
 
+export interface ModerationQueueItem {
+  id: string;
+  platformId: string;
+  handle: string;
+  content: string;
+  reason: string;
+  ts: number;
+  source?: "agent" | "report" | "both";
+  reportCount?: number;
+  kind?: "post" | "reply" | "article" | "user";
+}
+
 export interface ApiSocialStats {
   followers: number;
   following: number;
@@ -340,6 +352,17 @@ export async function hasReported(
     `/reports/check?platformId=${encodeURIComponent(platformId)}&kind=${kind}&targetId=${encodeURIComponent(targetId)}`,
   );
   return data.reported;
+}
+
+export async function getModerationQueue(): Promise<ModerationQueueItem[]> {
+  return request<ModerationQueueItem[]>("/moderation/queue");
+}
+
+export async function resolveModeration(id: string, status: "approved" | "flagged"): Promise<void> {
+  await request<{ ok: boolean }>("/moderation/resolve", {
+    method: "POST",
+    body: JSON.stringify({ id, status }),
+  });
 }
 
 export { BASE as PLATFORM_API_BASE };

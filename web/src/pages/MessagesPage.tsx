@@ -9,7 +9,7 @@ import {
   messagesPath,
 } from "../feed/feedApi";
 import { useUser } from "../feed/UserContext";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import type { Conversation } from "../feed/types";
 import "./MessagesPage.css";
 import "./SocialShell.css";

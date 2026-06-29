@@ -70,6 +70,7 @@ platform/api/.platform-store.json
 
 # --- Curaduria CAPA 2 (cola de moderacion local, no PII) ---
 **/.moderation-queue*.json
+**/.reports-store*.json
 
 # --- Funding ZK (CAPA 3) store local (no PII) ---
 funding/api/.funding-store.json

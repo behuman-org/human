@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { BentoSection, MagicBentoCard } from "../backgrounds/MagicBento/MagicBento";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import "./PlatformSection.css";
@@ -26,7 +26,7 @@ export function PlatformSection() {
             </span>
           ))}
         </ScrollReveal>
-        <BentoSection className="platform__grid">
+        <BentoSection className="platform__grid landing-card-grid">
           {platform.features.map((feature, index) => (
             <ScrollReveal key={feature.title} delay={index * 100}>
               <MagicBentoCard as="article" className="platform-card">

@@ -106,10 +106,17 @@ export interface CurationVerdict {
  * Entrada del curador. SOLO contenido + seudónimo (platformId / handle anónimo).
  * NUNCA address del KYC ni PII — la moderación no puede deanonimizar.
  */
+export type CurationContentKind = "post" | "reply" | "article";
+
 export interface CurationInput {
   platformId: string; // seudónimo anónimo (no es PII ni address)
   handle: string; // últimos 5 del platformId
   content: string; // texto del post a revisar
+  /** Título (artículos). */
+  title?: string;
+  /** Texto del padre (respuestas). Permite detectar off-topic sin identificar al autor. */
+  parentContent?: string;
+  contentKind?: CurationContentKind;
 }
 
 // ─── CAPA 3 · Funding ZK (DeFindex + Trustless Work) ──────────────────────────
