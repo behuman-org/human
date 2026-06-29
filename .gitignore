@@ -85,7 +85,3 @@ funding/api/.funding-store.json
 !/web/public/circuits-funding/**
 !/web/public/circuits-platform/
 !/web/public/circuits-platform/**
-
-# --- Pitch deck (no se versiona en el repo) ---
-beHuman Pitch, si.pdf
-*.pdf
