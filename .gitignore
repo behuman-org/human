@@ -73,3 +73,15 @@ platform/api/.platform-store.json
 
 # --- Funding ZK (CAPA 3) store local (no PII) ---
 funding/api/.funding-store.json
+.vercel
+
+# --- EXCEPCIÓN: artefactos ZK servidos al frontend (necesarios en el build de Vercel) ---
+# El frontend genera la prueba Groth16 en el navegador con snarkjs y carga estos
+# archivos desde /circuits, /circuits-funding y /circuits-platform. Sin ellos, todo
+# el flujo on-chain (KYC verify_and_register, posts, funding) falla con 404.
+!/web/public/circuits/
+!/web/public/circuits/**
+!/web/public/circuits-funding/
+!/web/public/circuits-funding/**
+!/web/public/circuits-platform/
+!/web/public/circuits-platform/**
