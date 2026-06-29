@@ -114,7 +114,7 @@ export function SettingsPage() {
             aria-pressed={locale === "es"}
             onClick={() => setLocale("es")}
           >
-            Español
+            {t.ui.switchToEs}
           </button>
           <button
             type="button"
@@ -122,7 +122,7 @@ export function SettingsPage() {
             aria-pressed={locale === "en"}
             onClick={() => setLocale("en")}
           >
-            English
+            {t.ui.switchToEn}
           </button>
         </div>
       </section>

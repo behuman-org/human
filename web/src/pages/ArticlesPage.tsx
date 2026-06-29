@@ -7,9 +7,11 @@ import { listArticles, type ArticleListItem } from "../feed/articlesApi";
 import { formatTimeAgo } from "../feed/feedApi";
 import { useI18n } from "../i18n/I18nProvider";
 import "./Articles.css";
+import "./SocialShell.css";
 
 export function ArticlesPage() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
+  const a = t.social.articles;
   const navigate = useNavigate();
   const [items, setItems] = useState<ArticleListItem[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -21,35 +23,49 @@ export function ArticlesPage() {
   }, []);
 
   return (
-    <div className="bh app-page articles">
-      <header className="articles__top">
+    <div className="articles-page">
+      <header className="feed-column__top page-header-split">
         <div>
-          <p className="bh-eyebrow">Capa 2 · long-form</p>
-          <h1 className="bh-h1">Artículos</h1>
-          <p className="bh-sub">Publicaciones extensas, ancladas on-chain para que nadie las modifique.</p>
+          <p className="feed-column__subtitle" style={{ marginTop: 0 }}>
+            {a.eyebrow}
+          </p>
+          <h1 className="feed-column__title">{a.title}</h1>
+          <p className="feed-column__subtitle">{a.subtitle}</p>
         </div>
-        <Button onClick={() => navigate("/app/articles/new")}>Escribir artículo</Button>
+        <div className="page-header-split__actions">
+          <Button onClick={() => navigate("/app/articles/new")}>{a.write}</Button>
+        </div>
       </header>
 
-      {error && <p className="bh-note bh-note--err">No se pudieron cargar los artículos: {error}</p>}
-      {items.length === 0 && !error && <p className="bh-note">Todavía no hay artículos. ¡Escribí el primero!</p>}
+      <div className="shell-page__body">
+        {error && (
+          <p className="bh-note bh-note--err articles-page__empty">
+            {a.loadError}: {error}
+          </p>
+        )}
+        {items.length === 0 && !error && <p className="bh-note articles-page__empty">{a.empty}</p>}
 
-      <div className="articles__list">
-        {items.map((a) => (
-          <Link key={a.id} to={`/app/articles/${a.id}`} className="article-card">
-            {a.banner && <div className="article-card__banner" style={{ backgroundImage: `url(${a.banner})` }} />}
-            <div className="article-card__body">
-              <h3 className="article-card__title">{a.title}</h3>
-              <p className="article-card__excerpt">{a.excerpt}</p>
-              <p className="article-card__meta">
-                <span>@{a.handle}</span>
-                <span>·</span>
-                <span>{formatTimeAgo(a.ts, locale)}</span>
-                {a.txHash && /^[0-9a-f]{64}$/i.test(a.txHash) && <span className="article-card__chip">on-chain ✓</span>}
-              </p>
-            </div>
-          </Link>
-        ))}
+        <div className="articles-page__list">
+          {items.map((item) => (
+            <Link key={item.id} to={`/app/articles/${item.id}`} className="article-card">
+              {item.banner && (
+                <div className="article-card__banner" style={{ backgroundImage: `url(${item.banner})` }} />
+              )}
+              <div className="article-card__body">
+                <h3 className="article-card__title">{item.title}</h3>
+                <p className="article-card__excerpt">{item.excerpt}</p>
+                <p className="article-card__meta">
+                  <span>@{item.handle}</span>
+                  <span>·</span>
+                  <span>{formatTimeAgo(item.ts, locale)}</span>
+                  {item.txHash && /^[0-9a-f]{64}$/i.test(item.txHash) && (
+                    <span className="article-card__chip">{a.onChainChip}</span>
+                  )}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

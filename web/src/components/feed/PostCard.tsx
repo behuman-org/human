@@ -25,7 +25,8 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, showVotes = false }: PostCardProps) {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
+  const p = t.social.postCard;
   const navigate = useNavigate();
   const [score, setScore] = useState(post.score);
   const [resonateCount, setResonateCount] = useState(post.resonateCount);
@@ -56,8 +57,6 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
     setScore((s) => s + (dir === "up" ? 1 : -1));
   }
 
-  // Resuena: reacción ANÓNIMA (prueba ZK con nullifier por post). El server cuenta nullifiers
-  // únicos → cuenta pública sin saber quién. Genera una prueba en cada toggle (acción deliberada).
   async function toggleResonate() {
     if (resonating) return;
     setResonating(true);
@@ -66,7 +65,6 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
       setDidResonate((was) => !was);
       setResonateCount(count);
     } catch (e) {
-      // Si todavía no se verificó como humano, lo mandamos al onboarding.
       if ((e as Error).message === "necesitas_verificarte") navigate("/onboarding");
     } finally {
       setResonating(false);
@@ -84,11 +82,11 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
       style={{ "--voice-accent": accent } as CSSProperties}
     >
       {showVotes && (
-        <div className="voice-card__votes" aria-label="Votación comunitaria">
+        <div className="voice-card__votes" aria-label={p.communityVote}>
           <button
             type="button"
             className={`voice-card__vote ${vote === "up" ? "is-on" : ""}`}
-            aria-label="Subir"
+            aria-label={p.voteUp}
             onClick={() => handleVote("up")}
           >
             <IconVoto up />
@@ -97,7 +95,7 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
           <button
             type="button"
             className={`voice-card__vote ${vote === "down" ? "is-on" : ""}`}
-            aria-label="Bajar"
+            aria-label={p.voteDown}
             onClick={() => handleVote("down")}
           >
             <IconVoto up={false} />
@@ -107,7 +105,11 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
 
       <div className="voice-card__panel">
         <header className="voice-card__head">
-          <Link to={authorPath} className="voice-card__avatar-link" aria-label={`Ver perfil de ${name}`}>
+          <Link
+            to={authorPath}
+            className="voice-card__avatar-link"
+            aria-label={p.viewProfile.replace("{name}", name)}
+          >
             <UserAvatar user={avatarUser} size="sm" verified />
           </Link>
           <div className="voice-card__who">
@@ -129,9 +131,7 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
           <p className="voice-card__body">{post.content}</p>
         </Link>
 
-        {post.curationStatus === "flagged" && (
-          <p className="voice-card__mod">En revisión por moderación</p>
-        )}
+        {post.curationStatus === "flagged" && <p className="voice-card__mod">{p.moderationReview}</p>}
 
         <footer className="voice-card__actions">
           <button
@@ -140,14 +140,21 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
             aria-pressed={didResonate}
             onClick={toggleResonate}
             disabled={resonating}
-            title={didResonate ? "Quitar tu Resuena (anónimo)" : "Resuena de forma anónima"}
+            title={didResonate ? p.resonateRemove : p.resonateAnon}
           >
             <IconResuena />
-            <span>{resonating ? "…" : `Resuena${resonateCount > 0 ? ` · ${resonateCount}` : ""}`}</span>
+            <span>
+              {resonating
+                ? "…"
+                : `${p.resonate}${resonateCount > 0 ? ` · ${resonateCount}` : ""}`}
+            </span>
           </button>
-          <Link to={`/app/post/${post.id}`} className="voice-card__action" aria-label="Responder">
+          <Link to={`/app/post/${post.id}`} className="voice-card__action" aria-label={p.reply}>
             <IconResponder />
-            <span>Responder{post.replyCount > 0 ? ` · ${post.replyCount}` : ""}</span>
+            <span>
+              {p.reply}
+              {post.replyCount > 0 ? ` · ${post.replyCount}` : ""}
+            </span>
           </Link>
           {post.txHash && /^[0-9a-f]{64}$/i.test(post.txHash) ? (
             <a
@@ -156,20 +163,20 @@ export function PostCard({ post, showVotes = false }: PostCardProps) {
               target="_blank"
               rel="noreferrer"
               style={{ textDecoration: "none" }}
-              title="Verificar esta opinión on-chain (Stellar Expert)"
+              title={p.verifyOnChain}
             >
               <IconContrato />
-              <span className="sr-only">Ver on-chain</span>
+              <span className="sr-only">{p.viewOnChain}</span>
             </a>
           ) : (
             <button
               type="button"
               className="voice-card__action voice-card__action--icon"
               disabled
-              title="Anclándose on-chain…"
+              title={p.anchoring}
             >
               <IconContrato />
-              <span className="sr-only">On-chain</span>
+              <span className="sr-only">{t.social.common.onChainPending}</span>
             </button>
           )}
         </footer>

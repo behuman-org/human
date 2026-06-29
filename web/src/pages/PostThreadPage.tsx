@@ -1,17 +1,20 @@
 // Capa 2 — Vista de hilo (estilo X): un tweet + sus respuestas anónimas.
-// Responder reusa el mismo flujo ZK que postear: prueba (contentHash atado al parentId) →
-// ancla on-chain con cuenta efímera → guarda off-chain. La identidad real nunca se expone.
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PostCard } from "../components/feed/PostCard";
 import { Button } from "../components/ui/Button";
 import { fetchPost, fetchReplies, publishReply } from "../feed/feedApi";
 import { loadAnyCredential } from "../kyc/credentialStore";
+import { useI18n } from "../i18n/I18nProvider";
 import type { FeedPost } from "../feed/types";
 import "./SocialShell.css";
 
 export function PostThreadPage() {
   const { id = "" } = useParams();
+  const { t } = useI18n();
+  const th = t.social.postThread;
+  const common = t.social.common;
+  const profile = t.social.profile;
   const [cred] = useState(() => loadAnyCredential());
   const [post, setPost] = useState<FeedPost | null>(null);
   const [replies, setReplies] = useState<FeedPost[]>([]);
@@ -43,34 +46,36 @@ export function PostThreadPage() {
     if (!text.trim()) return;
     setError(null);
     try {
-      setBusy("Generando prueba ZK y anclando tu respuesta on-chain…");
+      setBusy(th.busyReply);
       await publishReply({ parentId: id, content: text.trim() });
       setText("");
       setBusy(null);
       await load();
     } catch (e) {
       setBusy(null);
-      setError(errMsg(e));
+      setError(errMsg(e, th.needVerify));
     }
   }
 
   return (
     <div className="feed-column">
       <header className="feed-column__top feed-column__top--feed">
-        <Link to="/app" className="bh-back">← Volver al feed</Link>
-        <h1 className="feed-column__title">Hilo</h1>
+        <Link to="/app" className="bh-back">
+          ← {profile.backToFeed}
+        </Link>
+        <h1 className="feed-column__title">{th.title}</h1>
       </header>
 
       {loading ? (
-        <p className="feed-empty">Cargando…</p>
+        <p className="feed-empty">{th.loading}</p>
       ) : notFound || !post ? (
-        <p className="feed-empty">No encontramos este tweet.</p>
+        <p className="feed-empty">{th.notFound}</p>
       ) : (
         <>
           <PostCard post={post} />
 
           <div className="bh-card thread-composer">
-            <h2 className="bh-h2">Responder</h2>
+            <h2 className="bh-h2">{th.replyTitle}</h2>
             {cred ? (
               <>
                 <textarea
@@ -78,30 +83,35 @@ export function PostThreadPage() {
                   rows={3}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                  placeholder="Tu respuesta (anónima, anclada on-chain por ZK)…"
+                  placeholder={th.replyPlaceholder}
                   maxLength={560}
                 />
                 <div className="bh-actions">
                   <Button onClick={onReply} disabled={!!busy || !text.trim()}>
-                    Responder
+                    {th.replyButton}
                   </Button>
                 </div>
               </>
             ) : (
               <p className="bh-p">
-                Para responder, <Link to="/onboarding" className="bh-back">verificate como humano</Link>.
+                {th.verifyToReply}{" "}
+                <Link to="/onboarding" className="bh-back">
+                  {common.verifyLink}
+                </Link>
+                .
               </p>
             )}
             {busy && <p className="bh-note">⏳ {busy}</p>}
             {error && <p className="bh-note bh-note--err">{error}</p>}
           </div>
 
-          <section className="feed-stream" aria-label="Respuestas">
+          <section className="feed-stream" aria-label={th.replies}>
             <h2 className="bh-h2" style={{ padding: "0 0.35rem" }}>
-              Respuestas{replies.length > 0 ? ` · ${replies.length}` : ""}
+              {th.replies}
+              {replies.length > 0 ? ` · ${replies.length}` : ""}
             </h2>
             {replies.length === 0 ? (
-              <p className="feed-empty">Todavía no hay respuestas. Sé el primero.</p>
+              <p className="feed-empty">{th.repliesEmpty}</p>
             ) : (
               replies.map((r) => <PostCard key={r.id} post={r} />)
             )}
@@ -112,8 +122,8 @@ export function PostThreadPage() {
   );
 }
 
-function errMsg(e: unknown): string {
+function errMsg(e: unknown, needVerify: string): string {
   const m = (e as Error).message;
-  if (m === "necesitas_verificarte") return "Necesitás verificarte como humano para responder.";
+  if (m === "necesitas_verificarte") return needVerify;
   return m;
 }

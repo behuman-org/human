@@ -54,6 +54,21 @@
   }
 }
 
+.shell-page__body {
+  padding: 0 1rem calc(1rem + var(--safe-bottom));
+}
+
+.causes-page,
+.articles-page {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.causes-page__grid,
+.articles-page__list {
+  padding-bottom: 0.5rem;
+}
+
 .feed-empty {
   padding-left: 1rem;
   padding-right: 1rem;

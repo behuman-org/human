@@ -29,10 +29,11 @@
   background: var(--shell-header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-border);
+  padding: 0.85rem 1rem;
 }
 
 .feed-column__top--feed {
-  padding: 0.85rem 1rem;
+  /* alias — mismo padding que la base */
 }
 
 .feed-column__subtitle {

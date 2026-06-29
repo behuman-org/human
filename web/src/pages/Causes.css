@@ -1,7 +1,11 @@
 /* Capa 3 — UX de Causas: explorar (tarjetas) + detalle (portada, stats, donación guiada). */
 
 .causes-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
+}
+
+.causes-page__empty {
+  margin: 1rem 0 0;
 }
 
 /* ─── Tarjeta de causa (explorar) ─────────────────────────────────────────── */

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { avatarColor } from "../../feed/session";
 import { useUser } from "../../feed/UserContext";
+import { useI18n } from "../../i18n/I18nProvider";
 import "./EditProfileModal.css";
 
 const AVATAR_COUNT = 6;
@@ -12,6 +13,10 @@ interface EditProfileModalProps {
 
 export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
   const { user, updateProfile } = useUser();
+  const { t } = useI18n();
+  const p = t.social.profile;
+  const m = p.editModal;
+  const common = t.social.common;
   const [username, setUsername] = useState(user.username);
   const [bio, setBio] = useState(user.bio);
   const [avatarIndex, setAvatarIndex] = useState(user.avatarIndex);
@@ -29,21 +34,21 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
 
   return (
     <div className="profile-modal" role="dialog" aria-modal="true" aria-labelledby="edit-profile-title">
-      <button type="button" className="profile-modal__backdrop" aria-label="Cerrar" onClick={onClose} />
+      <button type="button" className="profile-modal__backdrop" aria-label={common.close} onClick={onClose} />
       <div className="profile-modal__panel">
         <header className="profile-modal__head">
           <button type="button" className="profile-modal__close" onClick={onClose}>
             ✕
           </button>
-          <h2 id="edit-profile-title">Editar perfil</h2>
+          <h2 id="edit-profile-title">{p.editProfile}</h2>
           <button type="button" className="profile-modal__save" onClick={save}>
-            Guardar
+            {m.save}
           </button>
         </header>
 
         <div className="profile-modal__body">
           <fieldset className="profile-modal__avatars">
-            <legend>Color de avatar</legend>
+            <legend>{m.avatarLegend}</legend>
             <div className="profile-modal__avatar-row">
               {Array.from({ length: AVATAR_COUNT }, (_, i) => (
                 <button
@@ -51,7 +56,7 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
                   type="button"
                   className={`profile-modal__avatar-opt ${avatarIndex === i ? "is-picked" : ""}`}
                   style={{ backgroundColor: avatarColor(i) }}
-                  aria-label={`Avatar color ${i + 1}`}
+                  aria-label={m.avatarColor.replace("{n}", String(i + 1))}
                   aria-pressed={avatarIndex === i}
                   onClick={() => setAvatarIndex(i)}
                 />
@@ -60,7 +65,7 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
           </fieldset>
 
           <label className="profile-modal__field">
-            <span>Nombre de usuario</span>
+            <span>{m.username}</span>
             <input
               type="text"
               value={username}
@@ -70,18 +75,11 @@ export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
           </label>
 
           <label className="profile-modal__field">
-            <span>Bio</span>
-            <textarea
-              value={bio}
-              rows={3}
-              maxLength={160}
-              onChange={(e) => setBio(e.target.value)}
-            />
+            <span>{m.bio}</span>
+            <textarea value={bio} rows={3} maxLength={160} onChange={(e) => setBio(e.target.value)} />
           </label>
 
-          <p className="profile-modal__note">
-            Tu handle @{user.handle} no cambia. Solo podés editar cómo te ven los demás.
-          </p>
+          <p className="profile-modal__note">{m.handleNote.replace("{handle}", user.handle)}</p>
         </div>
       </div>
     </div>

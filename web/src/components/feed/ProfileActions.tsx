@@ -9,6 +9,7 @@ import {
   wasReported,
 } from "../../feed/feedApi";
 import { PlatformApiError } from "../../feed/platformApi";
+import { useI18n } from "../../i18n/I18nProvider";
 import { ActionMenu } from "./ActionMenu";
 import "./ProfileActions.css";
 
@@ -19,6 +20,9 @@ interface ProfileActionsProps {
 }
 
 export function ProfileActions({ platformId, onFollowChange }: ProfileActionsProps) {
+  const { t } = useI18n();
+  const a = t.social.profileActions;
+  const messages = t.social.messages;
   const [following, setFollowing] = useState(false);
   const [reported, setReported] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -35,18 +39,16 @@ export function ProfileActions({ platformId, onFollowChange }: ProfileActionsPro
       if (following) {
         await unfollowUser(platformId);
         setFollowing(false);
-        setToast("Dejaste de seguir a esta persona.");
+        setToast(a.unfollowed);
       } else {
         await followUser(platformId);
         setFollowing(true);
-        setToast("Ahora seguís a esta persona.");
+        setToast(a.followed);
       }
       onFollowChange?.();
     } catch (err) {
       const msg =
-        err instanceof PlatformApiError && err.status === 404
-          ? "Seguir personas estará disponible cuando el backend exponga el endpoint."
-          : "No se pudo completar la acción. Revisá que la API esté en línea.";
+        err instanceof PlatformApiError && err.status === 404 ? a.followUnavailable : a.actionFailed;
       setToast(msg);
     } finally {
       setBusy(false);
@@ -54,17 +56,15 @@ export function ProfileActions({ platformId, onFollowChange }: ProfileActionsPro
     }
   }
 
-  async function denunciar() {
+  async function report() {
     if (reported) return;
     try {
-      await reportUser(platformId, "Contenido o conducta inapropiada");
+      await reportUser(platformId, a.reportReason);
       setReported(true);
-      setToast("Denuncia enviada. La revisará el equipo de moderación.");
+      setToast(a.reportSent);
     } catch (err) {
       const msg =
-        err instanceof PlatformApiError && err.status === 404
-          ? "Las denuncias estarán disponibles cuando el backend exponga el endpoint."
-          : "No se pudo enviar la denuncia.";
+        err instanceof PlatformApiError && err.status === 404 ? a.reportUnavailable : a.reportFailed;
       setToast(msg);
     }
     window.setTimeout(() => setToast(""), 3200);
@@ -78,20 +78,20 @@ export function ProfileActions({ platformId, onFollowChange }: ProfileActionsPro
         disabled={busy}
         onClick={() => void toggleFollow()}
       >
-        {following ? "Siguiendo" : "Seguir"}
+        {following ? a.following : a.follow}
       </button>
       <Link to={messagesPath(platformId)} className="profile-actions__message">
-        Mensaje
+        {messages.title}
       </Link>
       <ActionMenu
-        label="Opciones de perfil"
+        label={a.menuLabel}
         items={[
           {
             id: "report",
-            label: reported ? "Denunciado" : "Denunciar",
+            label: reported ? a.reported : a.report,
             destructive: true,
             disabled: reported,
-            onSelect: () => void denunciar(),
+            onSelect: () => void report(),
           },
         ]}
       />

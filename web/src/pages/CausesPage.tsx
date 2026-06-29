@@ -5,19 +5,25 @@ import { Link } from "react-router-dom";
 import type { Campaign } from "@behuman/shared";
 import { listCampaigns } from "../funding/api";
 import { daysLeft, fmtAmount, fmtApy, fundedPct, humanState } from "../funding/causeView";
+import { useI18n } from "../i18n/I18nProvider";
 import "../styles/behuman-ui.css";
 import "./Causes.css";
+import "./SocialShell.css";
 
 function CauseCard({ c }: { c: Campaign }) {
+  const { t, locale } = useI18n();
+  const cpy = t.social.causes;
   const pct = fundedPct(c);
-  const s = humanState(c);
+  const s = humanState(c, cpy.states);
   const left = daysLeft(c.deadline);
+  const donorCount = c.donorCount ?? 0;
+
   return (
     <Link to={`/app/causes/${c.id}`} className="cause-card">
       <div className="cause-card__top">
         <span className={`bh-state bh-state--${s.cls}`}>{s.label}</span>
         {typeof c.estApy === "number" && c.estApy > 0 && (
-          <span className="cause-card__yield" title="Rendimiento estimado mientras se recauda">
+          <span className="cause-card__yield" title={cpy.estApyTitle}>
             ↑ {fmtApy(c.estApy)} APY
           </span>
         )}
@@ -31,20 +37,30 @@ function CauseCard({ c }: { c: Campaign }) {
           <div className="bh-progress__bar" style={{ width: `${pct}%` }} />
         </div>
         <div className="cause-card__amounts">
-          <strong>{fmtAmount(c.raisedAmount)} {c.asset}</strong>
-          <span>de {fmtAmount(c.goalAmount)}</span>
+          <strong>
+            {fmtAmount(c.raisedAmount, locale)} {c.asset}
+          </strong>
+          <span>
+            {cpy.ofGoal} {fmtAmount(c.goalAmount, locale)}
+          </span>
         </div>
       </div>
 
       <div className="cause-card__meta">
-        <span><strong>{Math.round(pct)}%</strong> financiado</span>
+        <span>
+          <strong>{Math.round(pct)}%</strong> {cpy.funded}
+        </span>
         <span>·</span>
-        <span>{c.donorCount ?? 0} donante{(c.donorCount ?? 0) === 1 ? "" : "s"}</span>
+        <span>
+          {donorCount} {donorCount === 1 ? cpy.donor : cpy.donors}
+        </span>
         <span>·</span>
-        <span>{left > 0 ? `${left} día${left === 1 ? "" : "s"}` : "cerrada"}</span>
+        <span>
+          {left > 0 ? `${left} ${left === 1 ? cpy.day : cpy.days}` : cpy.closed}
+        </span>
       </div>
 
-      <span className="cause-card__cta">Ver causa →</span>
+      <span className="cause-card__cta">{cpy.viewCause}</span>
     </Link>
   );
 }
@@ -52,6 +68,8 @@ function CauseCard({ c }: { c: Campaign }) {
 type LoadState = "loading" | "ready" | "error";
 
 export function CausesPage() {
+  const { t } = useI18n();
+  const cpy = t.social.causes;
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [state, setState] = useState<LoadState>("loading");
 
@@ -66,45 +84,46 @@ export function CausesPage() {
   }, []);
 
   return (
-    <div className="bh app-page">
-      <header className="causes-header">
-        <p className="bh-eyebrow">Funding ZK</p>
-        <h1 className="bh-h1">Causas</h1>
-        <p className="bh-sub">
-          Apoyá causas reales como humano verificado, <strong>sin revelar quién sos</strong>. Tu
-          donación entra a un fondo que genera rendimiento hasta que se cumplen los hitos.
+    <div className="causes-page">
+      <header className="feed-column__top">
+        <p className="feed-column__subtitle" style={{ marginTop: 0 }}>
+          {cpy.eyebrow}
         </p>
+        <h1 className="feed-column__title">{cpy.title}</h1>
+        <p className="feed-column__subtitle">{cpy.subtitle}</p>
       </header>
 
-      {state === "loading" && (
-        <div className="bh-grid" aria-hidden>
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="cause-card cause-card--skeleton" />
-          ))}
-        </div>
-      )}
+      <div className="shell-page__body">
+        {state === "loading" && (
+          <div className="bh-grid causes-page__grid" aria-hidden>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="cause-card cause-card--skeleton" />
+            ))}
+          </div>
+        )}
 
-      {state === "error" && (
-        <div className="bh-card causes-empty">
-          <p className="bh-note bh-note--err">No pudimos cargar las causas.</p>
-          <p className="bh-muted">Verificá que el servicio de funding esté en línea e intentá de nuevo.</p>
-        </div>
-      )}
+        {state === "error" && (
+          <div className="bh-card causes-empty causes-page__empty">
+            <p className="bh-note bh-note--err">{cpy.loadError}</p>
+            <p className="bh-muted">{cpy.loadErrorHint}</p>
+          </div>
+        )}
 
-      {state === "ready" && campaigns.length === 0 && (
-        <div className="bh-card causes-empty">
-          <h2 className="bh-h2">Todavía no hay causas</h2>
-          <p className="bh-muted">Cuando se publique una causa, vas a poder donar de forma anónima desde acá.</p>
-        </div>
-      )}
+        {state === "ready" && campaigns.length === 0 && (
+          <div className="bh-card causes-empty causes-page__empty">
+            <h2 className="bh-h2">{cpy.emptyTitle}</h2>
+            <p className="bh-muted">{cpy.emptyBody}</p>
+          </div>
+        )}
 
-      {state === "ready" && campaigns.length > 0 && (
-        <div className="bh-grid">
-          {campaigns.map((c) => (
-            <CauseCard key={c.id} c={c} />
-          ))}
-        </div>
-      )}
+        {state === "ready" && campaigns.length > 0 && (
+          <div className="bh-grid causes-page__grid">
+            {campaigns.map((c) => (
+              <CauseCard key={c.id} c={c} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

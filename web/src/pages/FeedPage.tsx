@@ -32,11 +32,11 @@ export function FeedPage() {
       setPosts(data);
     } catch {
       setPosts([]);
-      setError("No pudimos cargar el feed. Verificá que la API esté en línea.");
+      setError(t.social.feed.errorLoad);
     } finally {
       setLoading(false);
     }
-  }, [community?.id, sort]);
+  }, [community?.id, sort, t.social.feed.errorLoad]);
 
   useEffect(() => {
     void fetchCommunities().then(setCommunities);
@@ -101,7 +101,7 @@ export function FeedPage() {
         onPublish={handlePublish}
       />
 
-      <section className="feed-stream" aria-label="Publicaciones del feed">
+      <section className="feed-stream" aria-label={f.postsAria}>
         {loading ? (
           <p className="feed-empty">{f.loading}</p>
         ) : error ? (
