@@ -6,7 +6,7 @@ import {
   readAllNotifications,
   readNotification,
 } from "../feed/feedApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import type { AppNotification } from "../feed/types";
 import "./NotificationsPage.css";
 import "./SocialShell.css";

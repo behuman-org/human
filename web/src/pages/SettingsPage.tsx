@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useI18n } from "../i18n/I18nProvider";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../feed/UserContext";
+import { useI18n } from "../i18n/useI18n";
 import { useAppPreferences, type ThemeMode } from "../preferences/AppPreferencesProvider";
 import "./SettingsPage.css";
 import "./SocialShell.css";
@@ -37,6 +38,8 @@ function SettingToggle({
 }
 
 export function SettingsPage() {
+  const navigate = useNavigate();
+  const { logout } = useUser();
   const { locale, setLocale, t } = useI18n();
   const s = t.social.settings;
   const prefs = useAppPreferences();
@@ -56,9 +59,11 @@ export function SettingsPage() {
 
   return (
     <div className="settings-page">
-      <header className="feed-column__top">
-        <h1 className="feed-column__title">{s.title}</h1>
-        <p className="feed-column__subtitle">{s.subtitle}</p>
+      <header className="feed-column__top shell-page-header">
+        <div className="shell-page-header__intro">
+          <h1 className="shell-page-header__title">{s.title}</h1>
+          <p className="shell-page-header__lead">{s.subtitle}</p>
+        </div>
       </header>
 
       <section className="settings-page__section">
@@ -114,7 +119,7 @@ export function SettingsPage() {
             aria-pressed={locale === "es"}
             onClick={() => setLocale("es")}
           >
-            Español
+            {t.ui.switchToEs}
           </button>
           <button
             type="button"
@@ -122,7 +127,7 @@ export function SettingsPage() {
             aria-pressed={locale === "en"}
             onClick={() => setLocale("en")}
           >
-            English
+            {t.ui.switchToEn}
           </button>
         </div>
       </section>
@@ -152,6 +157,17 @@ export function SettingsPage() {
             {t.social.moderation.openPanel}
           </Link>
         </div>
+        <button
+          type="button"
+          className="settings-page__logout"
+          onClick={() => {
+            logout();
+            navigate("/login", { replace: true });
+          }}
+        >
+          {s.logout}
+        </button>
+        <p className="settings-page__hint settings-page__hint--tight">{s.logoutHint}</p>
         <button type="button" className="settings-page__reset" onClick={resetAll}>
           {resetFlash ? s.resetDone : s.reset}
         </button>

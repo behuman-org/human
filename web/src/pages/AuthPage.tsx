@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HeroBackground } from "../components/hero/HeroBackground";
 import { LanguageToggle } from "../components/ui/LanguageToggle";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import { connectAndCheck } from "../identity/identity";
+import { clearLoggedOut } from "../feed/session";
 import { POLLAR_ENABLED, PollarEmailLogin } from "../identity/pollar";
 import "./AuthPage.css";
 
@@ -24,6 +25,7 @@ export function AuthPage({ defaultTab = "login" }: { defaultTab?: AuthTab }) {
     setBusy(true);
     try {
       await connectAndCheck();
+      clearLoggedOut();
       navigate("/app");
     } catch (e) {
       setError((e as Error).message);

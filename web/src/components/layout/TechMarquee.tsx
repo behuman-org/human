@@ -1,4 +1,5 @@
-import { useI18n } from "../../i18n/I18nProvider";
+import { getTechLogo } from "../../content/techLogos";
+import { useI18n } from "../../i18n/useI18n";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import "./TechMarquee.css";
 
@@ -16,12 +17,28 @@ export function TechMarquee() {
 
       <div className="tech-marquee__track-wrap" aria-hidden="true">
         <div className="tech-marquee__track">
-          {marqueeItems.map((item, index) => (
-            <span key={`${item.name}-${index}`} className="tech-marquee__pill">
-              <span className="tech-marquee__pill-name">{item.name}</span>
-              <span className="tech-marquee__pill-hint">{item.hint}</span>
-            </span>
-          ))}
+          {marqueeItems.map((item, index) => {
+            const logoSrc = getTechLogo(item.id);
+            return (
+              <span key={`${item.id}-${index}`} className="tech-marquee__pill">
+                {logoSrc ? (
+                  <img
+                    src={logoSrc}
+                    alt=""
+                    className="tech-marquee__pill-logo"
+                    width={28}
+                    height={28}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : null}
+                <span className="tech-marquee__pill-copy">
+                  <span className="tech-marquee__pill-name">{item.name}</span>
+                  <span className="tech-marquee__pill-hint">{item.hint}</span>
+                </span>
+              </span>
+            );
+          })}
         </div>
       </div>
     </section>

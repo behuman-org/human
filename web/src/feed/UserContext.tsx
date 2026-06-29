@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { bootstrapProfileFromApi, syncProfileToApi } from "./feedApi";
-import { loadSession, saveSession, setActiveIdentity } from "./session";
+import { markLoggedOut, isLoggedOut, loadSession, saveSession, setActiveIdentity } from "./session";
 import { derivePlatformIdentity } from "../identity/identity";
 import type { UserProfile } from "./types";
 
@@ -17,6 +17,7 @@ interface UserContextValue {
   /** ¿Tiene identidad verificada (credencial Capa 1) en este dispositivo? */
   verified: boolean;
   updateProfile: (patch: Partial<Pick<UserProfile, "username" | "bio" | "avatarIndex">>) => void;
+  logout: () => void;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
@@ -29,6 +30,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
+      if (isLoggedOut()) {
+        setActiveIdentity(null);
+        setUser(loadSession());
+        return;
+      }
+
       const id = await derivePlatformIdentity();
       if (cancelled) return;
       setActiveIdentity(id?.platformId ?? null);
@@ -63,9 +70,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const logout = useCallback(() => {
+    markLoggedOut();
+    setUser(loadSession());
+  }, []);
+
   const value = useMemo(
-    () => ({ user, verified: !!user.platformId, updateProfile }),
-    [user, updateProfile],
+    () => ({ user, verified: !!user.platformId, updateProfile, logout }),
+    [user, updateProfile, logout],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

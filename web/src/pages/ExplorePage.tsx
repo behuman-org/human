@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CreateThreadModal } from "../components/feed/CreateThreadModal";
 import { fetchCommunities } from "../feed/feedApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import type { Community } from "../feed/types";
 import "./ExplorePage.css";
 import "./SocialShell.css";
@@ -25,10 +25,10 @@ export function ExplorePage() {
 
   return (
     <div className="explore-page">
-      <header className="feed-column__top page-header-split">
-        <div>
-          <h1 className="feed-column__title">{e.title}</h1>
-          <p className="feed-column__subtitle">{e.subtitle}</p>
+      <header className="feed-column__top shell-page-header page-header-split">
+        <div className="shell-page-header__intro">
+          <h1 className="shell-page-header__title">{e.title}</h1>
+          <p className="shell-page-header__lead">{e.subtitle}</p>
         </div>
         <div className="page-header-split__actions">
           <button type="button" className="explore-page__create" onClick={() => setCreateOpen(true)}>

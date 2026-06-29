@@ -1,29 +1,26 @@
 import { NavLink, Link } from "react-router-dom";
 import { brand } from "../../content/brand";
 import { useUser } from "../../feed/UserContext";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { UserAvatar } from "./UserAvatar";
 import "./SidebarNav.css";
 
 export function SidebarNav() {
   const { user } = useUser();
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const n = t.social.nav;
-  const causasLabel = locale === "es" ? "Causas" : "Causes";
-  const articulosLabel = locale === "es" ? "Artículos" : "Articles";
 
-  // Notificaciones y Mensajes ocultos por ahora (no implementados todavía).
   const desktopNav = [
     { to: "/app", label: n.feed, end: true as const },
-    { to: "/app/articles", label: articulosLabel, end: false as const },
-    { to: "/app/causes", label: causasLabel, end: false as const },
+    { to: "/app/articles", label: n.articles, end: false as const },
+    { to: "/app/causes", label: n.causes, end: false as const },
     { to: "/app/settings", label: n.settings, end: false as const, desktopOnly: true as const },
   ];
 
   const mobileNav = [
     { to: "/app", label: n.feed, end: true as const },
-    { to: "/app/articles", label: articulosLabel, end: false as const },
-    { to: "/app/causes", label: causasLabel, end: false as const },
+    { to: "/app/articles", label: n.articles, end: false as const },
+    { to: "/app/causes", label: n.causes, end: false as const },
     { to: "/app/compose", label: n.publish, end: false as const, compose: true as const },
     { to: "/app/profile", label: n.profile, end: false as const, profile: true as const },
   ];
@@ -75,8 +72,8 @@ export function SidebarNav() {
   }
 
   return (
-    <nav className="sidebar-nav" aria-label="Navegación principal">
-      <Link to="/" className="sidebar-nav__logo" aria-label={`${brand.wordmark} — inicio`}>
+    <nav className="sidebar-nav" aria-label={n.mainAria}>
+      <Link to="/app" className="sidebar-nav__logo" aria-label={`${brand.wordmark} — ${n.feed}`}>
         <img src={brand.logoHorizontal} alt={brand.wordmark} />
       </Link>
 
