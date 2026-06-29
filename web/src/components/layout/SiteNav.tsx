@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { brand } from "../../content/brand";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { LanguageToggle } from "../ui/LanguageToggle";
 import "./SiteNav.css";
 

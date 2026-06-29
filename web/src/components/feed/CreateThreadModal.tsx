@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createCommunity } from "../../feed/feedApi";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import "./EditProfileModal.css";
 import "./CreateThreadModal.css";
 

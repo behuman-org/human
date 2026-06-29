@@ -2,7 +2,7 @@ import { useState, type CSSProperties } from "react";
 import type { Community } from "../../feed/types";
 import { communityLabel } from "../../feed/feedApi";
 import { useUser } from "../../feed/UserContext";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { UserAvatar } from "./UserAvatar";
 import "./PostComposer.css";
 

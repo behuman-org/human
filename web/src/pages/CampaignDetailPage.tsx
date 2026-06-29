@@ -27,7 +27,7 @@ import {
   signFundingAction,
 } from "../funding/zk3";
 import { daysLeft, fmtAmount, fmtApy, fundedPct, humanState, isRealTx, txUrl } from "../funding/causeView";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "../styles/behuman-ui.css";
 import "./Causes.css";
 

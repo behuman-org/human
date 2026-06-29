@@ -14,7 +14,7 @@ import {
   type ArticleOpinion,
 } from "../feed/articlesApi";
 import { formatTimeAgo } from "../feed/feedApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "../styles/behuman-ui.css";
 import "./Articles.css";
 

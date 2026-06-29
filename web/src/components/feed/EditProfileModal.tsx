@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { avatarColor } from "../../feed/session";
 import { useUser } from "../../feed/UserContext";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import "./EditProfileModal.css";
 
 const AVATAR_COUNT = 6;

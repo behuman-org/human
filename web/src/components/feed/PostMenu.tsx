@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { reportPost, wasReported } from "../../feed/feedApi";
 import { PlatformApiError } from "../../feed/platformApi";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { ActionMenu } from "./ActionMenu";
 
 interface PostMenuProps {

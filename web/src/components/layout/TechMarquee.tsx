@@ -1,5 +1,5 @@
 import { getTechLogo } from "../../content/techLogos";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import "./TechMarquee.css";
 

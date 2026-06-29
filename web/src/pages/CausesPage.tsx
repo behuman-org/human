@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import type { Campaign } from "@behuman/shared";
 import { listCampaigns } from "../funding/api";
 import { daysLeft, fmtAmount, fmtApy, fundedPct, humanState } from "../funding/causeView";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "../styles/behuman-ui.css";
 import "./Causes.css";
 import "./SocialShell.css";

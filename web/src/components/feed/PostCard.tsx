@@ -11,7 +11,7 @@ import {
   unresonatePost,
 } from "../../feed/feedApi";
 import { isResonatedLocally } from "../../identity/resonate";
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import { CommunityChip } from "./CommunityChip";
 import { IconContrato, IconResponder, IconResuena, IconVoto } from "./FeedIcons";
 import { PostMenu } from "./PostMenu";

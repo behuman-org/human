@@ -1,4 +1,4 @@
-import { useI18n } from "../../i18n/I18nProvider";
+import { useI18n } from "../../i18n/useI18n";
 import "./LanguageToggle.css";
 
 export function LanguageToggle({ className = "" }: { className?: string }) {

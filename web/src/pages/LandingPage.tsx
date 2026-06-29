@@ -9,7 +9,7 @@ import { CurationSection } from "../components/sections/CurationSection";
 import { HowItWorksSection } from "../components/sections/HowItWorksSection";
 import { LayersSection } from "../components/sections/LayersSection";
 import { PlatformSection } from "../components/sections/PlatformSection";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "../App.css";
 import "../components/sections/landing-cards.css";
 import "./LandingPage.css";

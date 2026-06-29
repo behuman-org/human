@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { PostComposer } from "../components/feed/PostComposer";
 import { GENERAL_FEED_ID, publishPost } from "../feed/feedApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "./SocialShell.css";
 
 export function ComposePage() {

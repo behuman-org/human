@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { PostCard } from "../components/feed/PostCard";
 import { PostComposer } from "../components/feed/PostComposer";
 import { GENERAL_FEED_ID, communityLabel, fetchCommunities, fetchFeed, publishPost } from "../feed/feedApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import type { Community, FeedPost, FeedSort } from "../feed/types";
 import "./SocialShell.css";
 

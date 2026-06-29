@@ -6,7 +6,7 @@ import { Markdown } from "../components/markdown/Markdown";
 import { loadAnyCredential } from "../kyc/credentialStore";
 import { anchorArticle, quoteArticle } from "../identity/article";
 import { createArticle } from "../feed/articlesApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "../styles/behuman-ui.css";
 import "./Articles.css";
 

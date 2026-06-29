@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { listArticles, type ArticleListItem } from "../feed/articlesApi";
 import { formatTimeAgo } from "../feed/feedApi";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import "./Articles.css";
 import "./SocialShell.css";
 

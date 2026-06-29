@@ -12,7 +12,7 @@ import {
   getFollowingCount,
 } from "../feed/feedApi";
 import { useUser } from "../feed/UserContext";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import type { FeedPost, UserProfile } from "../feed/types";
 import "./ProfilePage.css";
 import "./SocialShell.css";

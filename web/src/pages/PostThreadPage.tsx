@@ -5,7 +5,7 @@ import { PostCard } from "../components/feed/PostCard";
 import { Button } from "../components/ui/Button";
 import { fetchPost, fetchReplies, publishReply } from "../feed/feedApi";
 import { loadAnyCredential } from "../kyc/credentialStore";
-import { useI18n } from "../i18n/I18nProvider";
+import { useI18n } from "../i18n/useI18n";
 import type { FeedPost } from "../feed/types";
 import "./SocialShell.css";
 
