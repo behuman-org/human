@@ -45,6 +45,13 @@ identity/issuer/.issuer-state.test.json
 # --- Coordinación entre agentes (no es código del producto) ---
 .comms/
 
+# --- Pitch / material de presentación (vive en el repo .github, NO acá) ---
+human pitch.html
+human pitch.pdf
+beHuman Pitch, si.pdf
+*pitch*.pdf
+*Pitch*.pdf
+
 # --- SO / editor ---
 .DS_Store
 Thumbs.db
