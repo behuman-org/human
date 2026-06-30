@@ -5,12 +5,16 @@ import {
   allowAllModules,
   FREIGHTER_ID,
 } from "@creit.tech/stellar-wallets-kit";
+import { rpc } from "./stellar";
 
 const kit = new StellarWalletsKit({
   network: WalletNetwork.TESTNET,
   selectedWalletId: FREIGHTER_ID,
   modules: allowAllModules(),
 });
+
+const FRIENDBOT = import.meta.env.VITE_FRIENDBOT_URL ?? "https://friendbot.stellar.org";
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Abre el modal de selección de wallet y devuelve el address conectado. */
 export async function connectWallet(): Promise<string> {
@@ -30,6 +34,31 @@ export async function connectWallet(): Promise<string> {
       })
       .catch(reject);
   });
+}
+
+/**
+ * Testnet: si la wallet recién conectada no existe todavía en la red (cuenta no fondeada,
+ * típico en una wallet nueva), la fondea con friendbot. Sin esto, `init`/`verify_and_register`
+ * fallan en simulación porque el RPC no encuentra la cuenta del firmante ("la wallet no es
+ * fondeada"). No mueve fondos reales: es testnet.
+ */
+export async function ensureFunded(address: string): Promise<void> {
+  try {
+    await rpc.getAccount(address);
+    return; // ya existe/fondeada
+  } catch {
+    /* no encontrada todavía: la fondeamos abajo */
+  }
+  await fetch(`${FRIENDBOT}?addr=${encodeURIComponent(address)}`).catch(() => null);
+  for (let i = 0; i < 20; i++) {
+    try {
+      await rpc.getAccount(address);
+      return;
+    } catch {
+      await sleep(1000);
+    }
+  }
+  throw new Error("No pudimos fondear tu wallet en testnet automáticamente. Probá de nuevo en unos segundos.");
 }
 
 /** Firma un XDR con la wallet conectada; devuelve el XDR firmado. */

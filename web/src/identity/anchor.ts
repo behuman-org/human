@@ -5,7 +5,7 @@
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { loadAnyCredential } from "../kyc/credentialStore";
 import { contentHashField, generatePlatformProof, platformIdHex } from "../platform/zk2";
-import { createFundedEphemeral } from "../platform/ephemeral";
+import { getOrCreateFundedEphemeral } from "../platform/ephemeral";
 import { postTweet, quotePublish, registerIdentity, initIfNeeded, ContractError } from "../platform/chain2";
 
 export interface Anchored {
@@ -31,7 +31,7 @@ export async function anchorText(text: string): Promise<Anchored> {
   const contentHash = await contentHashField(text);
   const proof = await generatePlatformProof(cred, contentHash);
   const platformId = platformIdHex(proof.publicSignals[1]);
-  const kp = await createFundedEphemeral();
+  const kp = await getOrCreateFundedEphemeral();
 
   // Asegura que el opinion_board esté inicializado con la raíz del issuer de ESTA credencial
   // (idempotente: si ya estaba init, no hace nada). Sin esto, un contrato nuevo daría
@@ -76,7 +76,7 @@ export async function quoteText(text: string): Promise<Quote> {
   const contentHash = await contentHashField(text);
   const postProof = await generatePlatformProof(cred, contentHash);
   const idProof = await generatePlatformProof(cred, "0");
-  const kp = await createFundedEphemeral();
+  const kp = await getOrCreateFundedEphemeral();
 
   const q = await quotePublish(kp, idProof, postProof);
   const total = q.registerStroops + q.postStroops;

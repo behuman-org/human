@@ -14,7 +14,7 @@ import { Consent } from "./Consent";
 import { DocumentUpload } from "./DocumentUpload";
 import { Attributes, type AttributesInput } from "./Attributes";
 import { FaceScan } from "./FaceScan";
-import { connectWallet } from "./wallet";
+import { connectWallet, ensureFunded } from "./wallet";
 import { enroll, verifyDocumentData } from "./api";
 import { computeCommitment, generateProof, randomSecret, type GeneratedProof } from "./zk";
 import { initIfNeeded, isVerified, verifyAndRegister, ContractError } from "./chain";
@@ -91,8 +91,11 @@ export function KycFlow({
     try {
       const addr = await connectWallet();
       setAddress(addr);
-      // Anti-Sybil temprano: si esta wallet YA tiene identidad, no se permite re-validar.
       setStep("checking");
+      // Testnet: si la wallet es nueva (no fondeada), la fondeamos automáticamente. Si falla
+      // (red caída, etc.) seguimos igual: el error real va a salir más claro al registrar.
+      await ensureFunded(addr).catch(() => {});
+      // Anti-Sybil temprano: si esta wallet YA tiene identidad, no se permite re-validar.
       let already = false;
       try {
         already = await isVerified(addr);
